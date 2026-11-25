@@ -1,0 +1,54 @@
+# Gradle & Java
+.gradle/
+build/
+out/
+local.properties
+*.class
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+hs_err_pid*
+replay_pid*
+
+# Fabric Loom & DataGen
+run/
+run-*/
+src/main/generated/.cache/
+.cache/
+
+# Secrets & Publishing Tokens (CurseForge / Modrinth API keys)
+.env
+.env.*
+secrets.properties
+*.keystore
+*.jks
+
+# IDEs & Editors
+.idea/
+.vscode/
+.fleet/
+*.iml
+*.ipr
+*.iws
+bin/
+.classpath
+.project
+.settings/
+*.swp
+*.swo
+*~
+
+# Python (Asset generator scripts)
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# OS & Temp files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+*.log
+*.tmp
+*.bak
+*.orig

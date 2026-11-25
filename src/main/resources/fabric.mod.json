@@ -1,0 +1,44 @@
+{
+	"schemaVersion": 1,
+	"id": "expandedstorage",
+	"version": "${version}",
+	"name": "Expanded Storage",
+	"description": "A clean-room remake inspired by the classic Expanded Storage mod, rewritten from scratch for modern Fabric. Adds six tiered chests (Copper, Iron, Gold, Diamond, Obsidian, Netherite) with vanilla double-chest behavior, high performance and flexible GUI layouts (Adaptive Grid, Split-Wing, Smart Tabbed) with a native dark theme.",
+	"authors": [
+		"thaistoanf"
+	],
+	"contact": {
+		"homepage": "https://github.com/LeThaiToan2k4/Expanded-Storage-REMAKE",
+		"sources": "https://github.com/LeThaiToan2k4/Expanded-Storage-REMAKE",
+		"issues": "https://github.com/LeThaiToan2k4/Expanded-Storage-REMAKE/issues"
+	},
+	"license": "MIT",
+	"icon": "assets/expandedstorage/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.thaistoanf.expandedstorage.ExpandedStorage"
+		],
+		"client": [
+			"com.thaistoanf.expandedstorage.client.ExpandedStorageClient"
+		],
+		"fabric-datagen": [
+			"com.thaistoanf.expandedstorage.datagen.ExpandedStorageDataGenerator"
+		]
+	},
+	"accessWidener": "expandedstorage.accesswidener",
+	"depends": {
+		"fabricloader": ">=${loader_version}",
+		"minecraft": "~${minecraft_version}",
+		"java": ">=${java_version}",
+		"fabric-api": ">=${fabric_version}"
+	},
+	"custom": {
+		"modmenu": {
+			"links": {
+				"modmenu.kofi": "https://ko-fi.com/thaistoanf",
+				"modmenu.curseforge": "https://www.curseforge.com/members/lethaitoan2k4/projects"
+			}
+		}
+	}
+}
