@@ -13,7 +13,7 @@
 - **CurseForge:** https://www.curseforge.com/members/lethaitoan2k4/projects
 - **Ko-fi:** https://ko-fi.com/thaistoanf
 
-**Expanded Storage** la phien ban lam lai doc lap (clean-room remake) lay cam hung tu mod *Expanded Storage* co dien, duoc viet lai hoan toan tu dau cho Fabric hien dai ma khong phu thuoc vao bat ky thu vien ben thu ba nao ngoai Fabric API.
+**Expanded Storage** la phien ban lam lai doc lap (clean-room remake) lay cam hung tu mod *Expanded Storage* co dien, duoc viet lai hoan toan tu dau cho Fabric hien dai ma khong phu thuoc vao bat ky thu vien ben thu ba nao ngoai Fabric API. Cac texture ruong **Sat, Vang, Kim Cuong, Hac Dien Thach va Netherite** duoc ke thua tu tai nguyen giay phep MIT cua **Ellemes** va **Ninni**, ket hop voi texture **Ruong Dong** duoc thiet ke dong bo cung phong cach (xem [../CREDITS.md](../CREDITS.md)).
 
 ---
 

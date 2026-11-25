@@ -18,9 +18,12 @@ All notable changes to **Expanded Storage** (`https://github.com/LeThaiToan2k4/E
 - Three instant in-game GUI layout modes: `ADAPTIVE`, `SPLIT_WING`, and `SMART_TABBED` with automatic small-screen fallback and cursor-stack preservation across tab clicks.
 - Native 1-click Light / Dark GUI toggle persisted via Gson in `config/expandedstorage-client.json`.
 - Dedicated `Expanded Storage` creative tab (`itemGroup.expandedstorage.main`), 3D item rendering (`BuiltinItemRendererRegistry`), Fabric DataGen providers (recipes, loot tables, mining tags), and complete English (`en_us`) and Vietnamese (`vi_vn`) localizations.
+- Integrated the original MIT-licensed *Expanded Storage* chest textures by **Ellemes** and **Ninni** (`Iron`, `Gold`, `Diamond`, `Obsidian`, `Netherite`, converted cleanly from `64x48` to Vanilla `64x64` `ChestBlockEntityRenderer` UV coordinates) and created cohesive `64x64` **Copper Chest** textures matching the original pixel-art style and copper palette.
+- Added [CREDITS.md](CREDITS.md) documenting MIT license attribution for the original chest artwork.
 
 ### Changed
 - Replaced starter template build configuration, package structure, entrypoints, license, and metadata with `expandedstorage` (`expandedstorage-rk-fabric-1.20.1-1.0.0.jar`).
+- Remapped double-chest viewer-perspective `_left` / `_right` UV layouts onto Vanilla 1.20.1 `ChestType.LEFT` and `ChestType.RIGHT` model coordinates for seamless double-chest rendering.
 
 ### Optimized
 - **Zero Server Tick Overhead:** `ExpandedChestBlock.getTicker` returns `null` on the logical server; viewer counts update strictly on scheduled container interaction events.

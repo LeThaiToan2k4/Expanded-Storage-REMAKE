@@ -13,7 +13,7 @@
 - **CurseForge:** https://www.curseforge.com/members/lethaitoan2k4/projects
 - **Ko-fi:** https://ko-fi.com/thaistoanf
 
-**Expanded Storage** is a clean-room remake inspired by the classic *Expanded Storage* mod, rewritten from scratch for modern Fabric with zero external config or rendering library dependencies.
+**Expanded Storage** is a clean-room remake inspired by the classic *Expanded Storage* mod, rewritten from scratch for modern Fabric with zero external config or rendering library dependencies. The **Iron, Gold, Diamond, Obsidian, and Netherite** chest textures are adapted from the original MIT-licensed artwork by **Ellemes** and **Ninni**, with **Copper Chest** textures created to match their pixel-art style (see [../CREDITS.md](../CREDITS.md)).
 
 ---
 

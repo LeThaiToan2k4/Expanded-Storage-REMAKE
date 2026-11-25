@@ -11,7 +11,7 @@
 [![CurseForge](https://img.shields.io/badge/CurseForge-Projects-F16436?style=flat-square)](https://www.curseforge.com/members/lethaitoan2k4/projects)
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-thaistoanf-FF5E5B?style=flat-square)](https://ko-fi.com/thaistoanf)
 
-**[English Documentation](docs/DOCUMENTATION_EN.md)** | **[Tai Lieu Tieng Viet](docs/DOCUMENTATION_VN.md)** | **[Changelog](CHANGELOG.md)**
+**[English Documentation](docs/DOCUMENTATION_EN.md)** | **[Tai Lieu Tieng Viet](docs/DOCUMENTATION_VN.md)** | **[Changelog](CHANGELOG.md)** | **[Credits](CREDITS.md)**
 
 </div>
 
@@ -71,10 +71,11 @@ cd Expanded-Storage-REMAKE
 
 Output JAR: `build/libs/expandedstorage-rk-fabric-1.20.1-1.0.0.jar`
 
-### Credits and Links
+### Credits and License
 
 - **Author:** `thaistoanf`
-- **Concept Credit:** Inspired by the original *Expanded Storage* mod; cleanly re-implemented from scratch for modern Fabric.
+- **License:** MIT License ([LICENSE](LICENSE) | [CREDITS.md](CREDITS.md))
+- **Concept & Artwork Attribution:** Inspired by the original *Expanded Storage* mod. The **Iron, Gold, Diamond, Obsidian, and Netherite** chest entity textures are adapted from the original MIT-licensed *Expanded Storage* artwork by **Ellemes** and **Ninni** (remapped cleanly to Vanilla `64x64` chest UVs), and the **Copper Chest** textures were created to match their pixel-art style. All mod code and the 9-slice T-shape GUI system are written from scratch for modern Fabric.
 - **GitHub Repository:** https://github.com/LeThaiToan2k4/Expanded-Storage-REMAKE
 - **CurseForge Profile:** https://www.curseforge.com/members/lethaitoan2k4/projects
 - **Support on Ko-fi:** https://ko-fi.com/thaistoanf
@@ -123,10 +124,11 @@ cd Expanded-Storage-REMAKE
 
 File JAR dau ra: `build/libs/expandedstorage-rk-fabric-1.20.1-1.0.0.jar`
 
-### Lien Ket va Ghi Nhan
+### Ghi Nhan Ban Quyen va Lien Ket
 
 - **Tac gia:** `thaistoanf`
-- **Ghi nhan y tuong:** Lay cam hung tu mod *Expanded Storage* goc, duoc viet lai tu dau cho he sinh thai Fabric hien dai.
+- **Giay phep:** MIT License ([LICENSE](LICENSE) | [CREDITS.md](CREDITS.md))
+- **Ghi nhan y tuong & Texture:** Lay cam hung tu mod *Expanded Storage* co dien. Cac texture ruong **Sat, Vang, Kim Cuong, Hac Dien Thach va Netherite** duoc chuyen doi chuan UV `64x64` tu bo tai nguyen giay phep MIT goc cua **Ellemes** va **Ninni**, dong thoi texture **Ruong Dong** duoc thiet ke dong bo theo cung phong cach pixel-art do. Toan bo ma nguon va he thong giao dien 9-slice chu T duoc viet moi tu dau cho Fabric.
 - **Kho ma nguon GitHub:** https://github.com/LeThaiToan2k4/Expanded-Storage-REMAKE
 - **Trang CurseForge:** https://www.curseforge.com/members/lethaitoan2k4/projects
 - **Ung ho qua Ko-fi:** https://ko-fi.com/thaistoanf

@@ -51,10 +51,11 @@ Every chest follows authentic Vanilla Minecraft chest behavior: place two chests
 
 ---
 
-## Credits and Links
+## Credits and License
 
 - **Author:** `thaistoanf`
-- **Inspiration:** Clean remake inspired by the original *Expanded Storage* concept.
+- **License:** MIT License
+- **Original Concept & Artwork Credit:** Clean-room remake inspired by the classic *Expanded Storage* mod. Original MIT-licensed chest textures (**Iron, Gold, Diamond, Obsidian, and Netherite**) are credited to **Ellemes** and **Ninni**, with **Copper Chest** textures crafted specifically to match their iconic pixel-art style.
 - **Source Code & Issues:** [GitHub Repository](https://github.com/LeThaiToan2k4/Expanded-Storage-REMAKE)
 - **More Projects:** [CurseForge Profile](https://www.curseforge.com/members/lethaitoan2k4/projects)
 - **Support Development:** [Ko-fi (thaistoanf)](https://ko-fi.com/thaistoanf)

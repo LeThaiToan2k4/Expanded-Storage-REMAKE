@@ -4,6 +4,78 @@
       "type": "directory",
       "source": "entity/chest",
       "prefix": "entity/chest/"
+    },
+    {
+      "type": "single",
+      "resource": "expandedstorage:entity/chest/copper/normal"
+    },
+    {
+      "type": "single",
+      "resource": "expandedstorage:entity/chest/copper/left"
+    },
+    {
+      "type": "single",
+      "resource": "expandedstorage:entity/chest/copper/right"
+    },
+    {
+      "type": "single",
+      "resource": "expandedstorage:entity/chest/iron/normal"
+    },
+    {
+      "type": "single",
+      "resource": "expandedstorage:entity/chest/iron/left"
+    },
+    {
+      "type": "single",
+      "resource": "expandedstorage:entity/chest/iron/right"
+    },
+    {
+      "type": "single",
+      "resource": "expandedstorage:entity/chest/gold/normal"
+    },
+    {
+      "type": "single",
+      "resource": "expandedstorage:entity/chest/gold/left"
+    },
+    {
+      "type": "single",
+      "resource": "expandedstorage:entity/chest/gold/right"
+    },
+    {
+      "type": "single",
+      "resource": "expandedstorage:entity/chest/diamond/normal"
+    },
+    {
+      "type": "single",
+      "resource": "expandedstorage:entity/chest/diamond/left"
+    },
+    {
+      "type": "single",
+      "resource": "expandedstorage:entity/chest/diamond/right"
+    },
+    {
+      "type": "single",
+      "resource": "expandedstorage:entity/chest/obsidian/normal"
+    },
+    {
+      "type": "single",
+      "resource": "expandedstorage:entity/chest/obsidian/left"
+    },
+    {
+      "type": "single",
+      "resource": "expandedstorage:entity/chest/obsidian/right"
+    },
+    {
+      "type": "single",
+      "resource": "expandedstorage:entity/chest/netherite/normal"
+    },
+    {
+      "type": "single",
+      "resource": "expandedstorage:entity/chest/netherite/left"
+    },
+    {
+      "type": "single",
+      "resource": "expandedstorage:entity/chest/netherite/right"
     }
   ]
 }
