@@ -66,7 +66,6 @@ public class ExpandedChestScreen extends HandledScreen<ExpandedChestScreenHandle
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        this.renderBackground(context);
         super.render(context, mouseX, mouseY, delta);
         this.drawMouseoverTooltip(context, mouseX, mouseY);
         this.drawControlTooltips(context, mouseX, mouseY);

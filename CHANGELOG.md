@@ -1,53 +1,37 @@
 # Changelog
 
-All notable changes to **Expanded Storage** (`https://github.com/LeThaiToan2k4/Expanded-Storage-REMAKE`) are documented in this file.
+All notable changes for the **Expanded Storage** Minecraft `1.20.2` Fabric port are documented in this file.
 
-## [1.0.0] - 2026-11-25
+## [1.0.0+1.20.2] - 2026-11-26
 
-### Added
-- Clean-room Fabric `1.20.1` implementation of **Expanded Storage** by `thaistoanf` (`com.thaistoanf.expandedstorage`), depending solely on Fabric Loader and Fabric API.
-- Six progressive Vanilla-style chest tiers:
-  - **Copper Chest** (`36` single / `72` double slots)
-  - **Iron Chest** (`54` single / `108` double slots)
-  - **Gold Chest** (`81` single / `162` double slots)
-  - **Diamond Chest** (`108` single / `216` double slots, budget diamond + glass recipe)
-  - **Obsidian Chest** (`108` single / `216` double slots, `1200.0` blast resistance)
-  - **Netherite Chest** (`135` single / `270` double slots, `1200.0` blast resistance, fireproof item, dual Smithing Table paths from Diamond or Obsidian Chest)
-- Full Vanilla chest mechanics: same-tier double chest merging, `Shift` isolated placement, waterlogging, lid open/close animations and sounds, cat and solid-block obstruction checks, Hopper `DoubleInventory` automation, and Redstone Comparator signal calculation.
-- Dynamic 9-slice T-shape GUI (`gui_light.png` and `gui_dark.png`) with seamless chest-to-player-inventory border stitching and click-through transparent side flanks.
-- Three instant in-game GUI layout modes: `ADAPTIVE`, `SPLIT_WING`, and `SMART_TABBED` with automatic small-screen fallback and cursor-stack preservation across tab clicks.
-- Native 1-click Light / Dark GUI toggle persisted via Gson in `config/expandedstorage-client.json`.
-- Dedicated `Expanded Storage` creative tab (`itemGroup.expandedstorage.main`), 3D item rendering (`BuiltinItemRendererRegistry`), Fabric DataGen providers (recipes, loot tables, mining tags), and complete English (`en_us`) and Vietnamese (`vi_vn`) localizations.
-- Integrated the original MIT-licensed *Expanded Storage* chest textures by **Ellemes** and **Ninni** (`Iron`, `Gold`, `Diamond`, `Obsidian`, `Netherite`, converted cleanly from `64x48` to Vanilla `64x64` `ChestBlockEntityRenderer` UV coordinates) and created cohesive `64x64` **Copper Chest** textures matching the original pixel-art style and copper palette.
-- Added [CREDITS.md](CREDITS.md) documenting MIT license attribution for the original chest artwork.
+### Target Environment & Toolchain
+- **Minecraft:** `1.20.2`
+- **Fabric Loader:** `0.20.1`
+- **Yarn Mappings:** `1.20.2+build.4`
+- **Fabric API:** `0.91.6+1.20.2`
+- **Java Toolchain:** JDK `17` (`D:\Java\Java-17`, `JavaVersion.VERSION_17`, `options.release = 17`)
+- **Gradle / Loom:** Gradle `8.14.3` with Fabric Loom `1.10-SNAPSHOT` (`1.10.5`)
+- **Output Artifact:** Standardized JAR naming via `archivesName = "${project.archives_base_name}-fabric-${project.minecraft_version}"` (`archives_base_name=expandedstorage-rk`), producing `build/libs/expandedstorage-rk-fabric-1.20.2-1.0.0.jar` and aligning Maven publication `artifactId` to `project.base.archivesName.get()`.
 
-### Changed
-- Replaced starter template build configuration, package structure, entrypoints, license, and metadata with `expandedstorage` (`expandedstorage-rk-fabric-1.20.1-1.0.0.jar`).
-- Remapped double-chest viewer-perspective `_left` / `_right` UV layouts onto Vanilla 1.20.1 `ChestType.LEFT` and `ChestType.RIGHT` model coordinates for seamless double-chest rendering.
+### Code, GUI, BlockEntity, DataGen & Resource Migrations
+- **Block & BlockEntity (`ExpandedChestBlock`):**
+  - Updated `ExpandedChestBlock#getTicker` to call `BlockWithEntity.validateTicker(type, this.getExpectedEntityType(), ExpandedChestBlockEntity::clientTick)` in place of the removed `checkType` helper from `1.20.1`.
+  - Retained `ExpandedChestBlockEntity#readNbt(NbtCompound)` and `writeNbt(NbtCompound)` (without `WrapperLookup`, which is unchanged in `1.20.2`), zero server-tick overhead, and dormant client lid animation.
+- **Client GUI (`ExpandedChestScreen`):**
+  - Removed the obsolete 1-argument `this.renderBackground(context)` call in `ExpandedChestScreen#render`, delegating background dimming and `drawBackground(...)` to `super.render(context, mouseX, mouseY, delta)` (`Screen#render` -> `HandledScreen#renderBackground(DrawContext, int, int, float)`), verified against `1.20.2` class bytecode via `javap`.
+  - Confirmed `RenderCompat` (`DrawContext#drawTexture`, `drawText`, `drawTooltip`, `chest.png` atlas sprites) and `ExpandedChestBlockEntityRenderer` (`ModelPart#render`) remain compatible with `1.20.2`.
+- **Access Widener & Networking:**
+  - Retained and validated `src/main/resources/expandedstorage.accesswidener` (`mutable field net/minecraft/screen/slot/Slot x I` and `y I`) during Loom `validateAccessWidener`.
+  - Retained `NetworkCompat` (`ExtendedScreenHandlerType` / `ExtendedScreenHandlerFactory` over `PacketByteBuf`) and `StorageCompat` (`Inventories.readNbt` / `writeNbt`).
+- **Build & DataGen (`build.gradle`, `ModRecipeProvider`, `src/main/generated/`):**
+  - Migrated `ModRecipeProvider#generate` from `Consumer<RecipeJsonProvider>` to `net.minecraft.data.server.recipe.RecipeExporter`.
+  - Removed `mustRunAfter("runDatagen")` from `processResources` in `build.gradle` to resolve a circular Gradle task dependency (`:classes -> :processResources -> :runDatagen -> :classes`) when executing `./gradlew runDatagen`.
+  - Regenerated DataGen outputs via `./gradlew runDatagen` for `1.20.2` (updating the 7 recipe unlock advancements under `src/main/generated/data/expandedstorage/advancements/recipes/decorations/` while preserving plural `recipes/` paths and `"item"` recipe result keys).
+- **Documentation & Metadata:**
+  - Updated `gradle.properties`, `fabric.mod.json` (expanded to `"minecraft": "~1.20.2"`, `"fabricloader": ">=0.20.1"`, `"java": ">=17"`, `"fabric-api": ">=0.91.6+1.20.2"`), `README.md`, `docs/DOCUMENTATION_EN.md`, and `docs/DOCUMENTATION_VN.md`.
 
-### Optimized
-- **Zero Server Tick Overhead:** `ExpandedChestBlock.getTicker` returns `null` on the logical server; viewer counts update strictly on scheduled container interaction events.
-- **Zero Idle Client Tick:** `ExpandedChestBlockEntity.clientTick` exits immediately whenever a chest is closed (`viewerCount == 0` and lid animation progress is `0.0f`).
-- **Sprite Atlas Batching:** Stitched all 18 `64x64` chest textures into the Vanilla chest atlas to minimize draw calls in large storage rooms.
-- **Dirty-Slot Sync Only:** Relies on Vanilla `ScreenHandler` slot delta packets rather than custom full-container payloads.
-
----
-
-## Version Porting Reference (`1.20.1` -> `1.21.11+`)
-
-When porting **Expanded Storage** to newer Minecraft / Fabric releases, `core/` (`ChestTier`, `GuiMode`, `LayoutCalculator`, `ClientConfig`) remains unchanged. Only the following isolated adapter and metadata files require updates:
-
-1. **`gradle.properties` & `build.gradle`:**
-   - Update `minecraft_version`, `yarn_mappings`, `loader_version`, `loom_version`, `fabric_version`, `java_version` (`21` for `1.20.5+`), and `archives_base_name`.
-2. **`src/main/resources/expandedstorage.accesswidener`:**
-   - Remove or keep `mutable field Slot x / y` depending on whether target mappings already expose `Slot.x` and `Slot.y` as mutable.
-3. **`compat/IdCompat.java`:**
-   - Swap `new Identifier(MOD_ID, path)` to `Identifier.of(MOD_ID, path)` in `1.21+`.
-4. **`compat/StorageCompat.java`:**
-   - Add `RegistryWrapper.WrapperLookup` parameter to `Inventories.readNbt` / `Inventories.writeNbt` in `1.20.5+` (and `ReadView` / `WriteView` in `1.21.6+`).
-5. **`compat/NetworkCompat.java`:**
-   - Migrate `ExtendedScreenHandlerType` and `ExtendedScreenHandlerFactory` from `PacketByteBuf` to custom `CustomPayload` + `PacketCodec` in `1.20.5+`.
-6. **`compat/RenderCompat.java`:**
-   - Update `DrawContext.drawTexture` to pass `RenderLayer::getGuiTextured` (or `RenderPipelines.GUI_TEXTURED`) in `1.21.2+`, and update `ModelPart.render` / `BlockEntityRenderer` state submission in `1.21.9+`.
-7. **`datagen/` Providers:**
-   - Update `FabricRecipeProvider`, `FabricBlockLootTableProvider`, and `FabricTagProvider.BlockTagProvider` constructors for `CompletableFuture<RegistryWrapper.WrapperLookup>` changes in `1.20.5+` / `1.21+`.
+### Build & Runtime Verification
+- Executed `./gradlew runDatagen` and `./gradlew clean build` with zero compile errors and zero severe warnings.
+- Verified runtime startup via `./gradlew runClient` on Minecraft `1.20.2` with Fabric Loader `0.20.1` and Fabric API `0.91.6+1.20.2`:
+  - Confirmed `expandedstorage 1.0.0` loaded cleanly (`Expanded Storage initialized (6 chest tiers registered).`).
+  - Confirmed `minecraft:textures/atlas/chest.png-atlas` and `minecraft:textures/atlas/gui.png-atlas` stitched cleanly, OpenAL audio started, and zero Mixin errors or mod-originated exceptions occurred.

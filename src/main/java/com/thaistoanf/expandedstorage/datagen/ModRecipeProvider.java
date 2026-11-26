@@ -5,14 +5,12 @@ import com.thaistoanf.expandedstorage.core.ChestTier;
 import com.thaistoanf.expandedstorage.registry.ModBlocks;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
-import net.minecraft.data.server.recipe.RecipeJsonProvider;
+import net.minecraft.data.server.recipe.RecipeExporter;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.data.server.recipe.SmithingTransformRecipeJsonBuilder;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.book.RecipeCategory;
-
-import java.util.function.Consumer;
 
 /** Generates shaped crafting and smithing transform recipes for all six chest tiers. */
 public class ModRecipeProvider extends FabricRecipeProvider {
@@ -21,7 +19,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
     }
 
     @Override
-    public void generate(Consumer<RecipeJsonProvider> exporter) {
+    public void generate(RecipeExporter exporter) {
         // 1. Copper Chest: vanilla chest surrounded by 8 copper ingots
         ShapedRecipeJsonBuilder.create(RecipeCategory.DECORATIONS, ModBlocks.COPPER_CHEST)
                 .pattern("MMM")

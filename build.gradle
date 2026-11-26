@@ -7,8 +7,8 @@ version = project.mod_version
 group = project.maven_group
 
 base {
-	// Produces: expandedstorage-rk-fabric-1.20.1-1.0.0.jar
-	archivesName = project.archives_base_name
+	// Produces: expandedstorage-rk-fabric-1.20.2-1.0.0.jar
+	archivesName = "${project.archives_base_name}-fabric-${project.minecraft_version}"
 }
 
 repositories {
@@ -39,8 +39,6 @@ dependencies {
 }
 
 processResources {
-	mustRunAfter("runDatagen")
-
 	def expandProps = [
 		"version"          : project.version,
 		"minecraft_version": project.minecraft_version,
@@ -85,7 +83,7 @@ jar {
 publishing {
 	publications {
 		create("mavenJava", MavenPublication) {
-			artifactId = project.archives_base_name
+			artifactId = project.base.archivesName.get()
 			from components.java
 		}
 	}

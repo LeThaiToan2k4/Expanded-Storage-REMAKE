@@ -34,9 +34,9 @@
   },
   "requirements": [
     [
+      "has_the_recipe",
       "has_diamond_chest",
-      "has_netherite_ingot",
-      "has_the_recipe"
+      "has_netherite_ingot"
     ]
   ],
   "rewards": {

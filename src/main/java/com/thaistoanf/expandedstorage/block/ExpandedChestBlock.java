@@ -107,6 +107,6 @@ public class ExpandedChestBlock extends ChestBlock {
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
         // Server chests require zero per-tick updates; client chests skip work whenever closed and idle.
-        return world.isClient ? checkType(type, this.getExpectedEntityType(), ExpandedChestBlockEntity::clientTick) : null;
+        return world.isClient ? validateTicker(type, this.getExpectedEntityType(), ExpandedChestBlockEntity::clientTick) : null;
     }
 }
