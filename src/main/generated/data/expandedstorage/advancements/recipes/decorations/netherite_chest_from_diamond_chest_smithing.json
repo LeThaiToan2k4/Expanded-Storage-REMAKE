@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "expandedstorage:diamond_chest"
-            ]
+            "items": "expandedstorage:diamond_chest"
           }
         ]
       },
@@ -17,9 +15,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "minecraft:netherite_ingot"
-            ]
+            "items": "minecraft:netherite_ingot"
           }
         ]
       },

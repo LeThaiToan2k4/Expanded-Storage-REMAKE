@@ -11,11 +11,17 @@ import net.minecraft.data.server.recipe.SmithingTransformRecipeJsonBuilder;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.book.RecipeCategory;
+import net.minecraft.registry.RegistryWrapper;
+
+import java.util.concurrent.CompletableFuture;
 
 /** Generates shaped crafting and smithing transform recipes for all six chest tiers. */
 public class ModRecipeProvider extends FabricRecipeProvider {
-    public ModRecipeProvider(FabricDataOutput output) {
-        super(output);
+    public ModRecipeProvider(
+            FabricDataOutput output,
+            CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture
+    ) {
+        super(output, registriesFuture);
     }
 
     @Override

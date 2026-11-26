@@ -6,6 +6,8 @@ import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
@@ -14,7 +16,7 @@ import net.minecraft.text.Text;
 
 /**
  * Isolates {@link ExtendedScreenHandlerFactory} and opening payload serialization
- * (migrates cleanly to {@code ExtendedScreenHandlerType<T, D>} + {@code PacketCodec} in 1.20.5+/1.21+).
+ * using {@code ExtendedScreenHandlerType<T, D>} + {@link PacketCodec} in 1.20.5+.
  */
 public final class NetworkCompat {
     private NetworkCompat() {
@@ -22,6 +24,10 @@ public final class NetworkCompat {
 
     /** Lightweight opening metadata sent once when opening a chest; slots sync via vanilla ScreenHandler. */
     public record ChestOpenData(ChestTier tier, boolean doubleChest) {
+        public static final PacketCodec<RegistryByteBuf, ChestOpenData> PACKET_CODEC = PacketCodec.of(
+                (value, buf) -> writeOpenData(buf, value),
+                NetworkCompat::readOpenData
+        );
     }
 
     @FunctionalInterface
@@ -35,8 +41,7 @@ public final class NetworkCompat {
     }
 
     public static <T extends ScreenHandler> ScreenHandlerType<T> createScreenHandlerType(ClientHandlerFactory<T> factory) {
-        return new ExtendedScreenHandlerType<>((syncId, playerInventory, buf) ->
-                factory.create(syncId, playerInventory, readOpenData(buf)));
+        return new ExtendedScreenHandlerType<>(factory::create, ChestOpenData.PACKET_CODEC);
     }
 
     public static NamedScreenHandlerFactory createExtendedFactory(
@@ -45,10 +50,10 @@ public final class NetworkCompat {
             Text displayName,
             ServerMenuCreator creator
     ) {
-        return new ExtendedScreenHandlerFactory() {
+        return new ExtendedScreenHandlerFactory<ChestOpenData>() {
             @Override
-            public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
-                writeOpenData(buf, new ChestOpenData(tier, doubleChest));
+            public ChestOpenData getScreenOpeningData(ServerPlayerEntity player) {
+                return new ChestOpenData(tier, doubleChest);
             }
 
             @Override

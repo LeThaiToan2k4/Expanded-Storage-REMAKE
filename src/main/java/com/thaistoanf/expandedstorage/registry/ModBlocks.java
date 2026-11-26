@@ -3,8 +3,7 @@ package com.thaistoanf.expandedstorage.registry;
 import com.thaistoanf.expandedstorage.block.ExpandedChestBlock;
 import com.thaistoanf.expandedstorage.compat.IdCompat;
 import com.thaistoanf.expandedstorage.core.ChestTier;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.MapColor;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -41,7 +40,7 @@ public final class ModBlocks {
 
     private static ExpandedChestBlock registerChest(ChestTier tier, MapColor mapColor, BlockSoundGroup sounds) {
         Identifier id = IdCompat.id(tier.blockId());
-        FabricBlockSettings blockSettings = FabricBlockSettings.create()
+        AbstractBlock.Settings blockSettings = AbstractBlock.Settings.create()
                 .mapColor(mapColor)
                 .strength(tier.hardness(), tier.blastResistance())
                 .sounds(sounds)
@@ -51,7 +50,7 @@ public final class ModBlocks {
         ExpandedChestBlock block = new ExpandedChestBlock(tier, blockSettings, () -> ModBlockEntities.get(tier));
         Registry.register(Registries.BLOCK, id, block);
 
-        FabricItemSettings itemSettings = new FabricItemSettings();
+        Item.Settings itemSettings = new Item.Settings();
         if (tier.fireproof()) {
             itemSettings.fireproof();
         }

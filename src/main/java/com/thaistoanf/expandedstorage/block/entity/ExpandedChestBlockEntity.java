@@ -17,6 +17,7 @@ import net.minecraft.inventory.DoubleInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
@@ -68,7 +69,7 @@ public class ExpandedChestBlockEntity extends ChestBlockEntity {
     public ExpandedChestBlockEntity(ChestTier tier, BlockPos pos, BlockState state) {
         super(ModBlockEntities.get(tier), pos, state);
         this.tier = tier;
-        this.setInvStackList(StorageCompat.createStackList(tier.singleSlots()));
+        this.setHeldStacks(StorageCompat.createStackList(tier.singleSlots()));
     }
 
     public ExpandedChestBlockEntity(BlockPos pos, BlockState state) {
@@ -97,20 +98,20 @@ public class ExpandedChestBlockEntity extends ChestBlockEntity {
     }
 
     @Override
-    public void readNbt(NbtCompound nbt) {
-        super.readNbt(nbt);
+    protected void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
+        super.readNbt(nbt, registryLookup);
         DefaultedList<ItemStack> stacks = StorageCompat.createStackList(this.size());
         if (!this.readLootTable(nbt)) {
-            StorageCompat.readInventory(nbt, stacks);
+            StorageCompat.readInventory(nbt, stacks, registryLookup);
         }
-        this.setInvStackList(stacks);
+        this.setHeldStacks(stacks);
     }
 
     @Override
-    protected void writeNbt(NbtCompound nbt) {
-        super.writeNbt(nbt);
+    protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
+        super.writeNbt(nbt, registryLookup);
         if (!this.writeLootTable(nbt)) {
-            StorageCompat.writeInventory(nbt, this.method_11282());
+            StorageCompat.writeInventory(nbt, this.getHeldStacks(), registryLookup);
         }
     }
 
