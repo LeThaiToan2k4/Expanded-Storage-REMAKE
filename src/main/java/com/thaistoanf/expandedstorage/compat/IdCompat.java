@@ -13,10 +13,10 @@ public final class IdCompat {
     }
 
     public static Identifier id(String path) {
-        return new Identifier(MOD_ID, path);
+        return Identifier.of(MOD_ID, path);
     }
 
     public static Identifier mc(String path) {
-        return new Identifier("minecraft", path);
+        return Identifier.ofVanilla(path);
     }
 }

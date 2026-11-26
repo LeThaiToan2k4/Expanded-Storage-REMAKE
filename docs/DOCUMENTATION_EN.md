@@ -7,8 +7,8 @@
 - **Mod Name:** Expanded Storage
 - **Mod ID:** `expandedstorage`
 - **Author:** `thaistoanf`
-- **Minecraft Target:** `1.20.6` (Fabric)
-- **Dependencies:** Fabric Loader (`>=0.20.1`), Fabric API (`>=0.100.8+1.20.6`), Java `21`
+- **Minecraft Target:** `1.21` (Fabric)
+- **Dependencies:** Fabric Loader (`>=0.20.1`), Fabric API (`>=0.102.0+1.21`), Java `21`
 - **Repository:** https://github.com/LeThaiToan2k4/Expanded-Storage-REMAKE
 - **CurseForge:** https://www.curseforge.com/members/lethaitoan2k4/projects
 - **Ko-fi:** https://ko-fi.com/thaistoanf

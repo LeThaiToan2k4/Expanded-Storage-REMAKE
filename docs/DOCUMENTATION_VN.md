@@ -7,8 +7,8 @@
 - **Ten Mod:** Expanded Storage
 - **Mod ID:** `expandedstorage`
 - **Tac gia:** `thaistoanf`
-- **Phien ban Minecraft:** `1.20.6` (Fabric)
-- **Yeu cau:** Fabric Loader (`>=0.20.1`), Fabric API (`>=0.100.8+1.20.6`), Java `21`
+- **Phien ban Minecraft:** `1.21` (Fabric)
+- **Yeu cau:** Fabric Loader (`>=0.20.1`), Fabric API (`>=0.102.0+1.21`), Java `21`
 - **Kho ma nguon:** https://github.com/LeThaiToan2k4/Expanded-Storage-REMAKE
 - **CurseForge:** https://www.curseforge.com/members/lethaitoan2k4/projects
 - **Ko-fi:** https://ko-fi.com/thaistoanf
