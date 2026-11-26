@@ -16,8 +16,9 @@ All notable changes for the **Expanded Storage** Minecraft `1.20.4` Fabric port 
 ### Code, BlockEntity, GUI, DataGen & Resource Alignment
 - **Chest Block & BlockEntity (`ExpandedChestBlock`, `ExpandedChestBlockEntity`):**
   - Verified `ExpandedChestBlock` (`validateTicker`, `LootableInventory#generateLoot`) and `ExpandedChestBlockEntity` (`readNbt` / `writeNbt` without `WrapperLookup`, `LootableInventory#readLootTable` / `writeLootTable`, and `ChestBlockEntity#method_11282` inventory stack-list accessor in Yarn `1.20.4+build.3`) via `javap` bytecode inspection and clean compilation.
-- **Registry & Warning Triage (`ModBlockEntities`):**
-  - Intentionally retained `FabricBlockEntityTypeBuilder` in `ModBlockEntities` (soft deprecation note in `fabric-object-builder-api-v1` `13.1.0`, un-deprecated in `1.21.2+`) per conservative warning triage policy to preserve cross-version stability.
+- **Registry & Warning Triage (`ModBlockEntities`, `ModBlocks`):**
+  - Migrated `ModBlockEntities` from the deprecated `FabricBlockEntityTypeBuilder.create(...).build()` to `BlockEntityType.Builder.create(...).build()` for Fabric API `0.97.3+1.20.4`.
+  - Removed the unused `net.minecraft.block.Block` import from `ModBlocks`.
 - **Client GUI & Rendering (`ExpandedChestScreen`, `RenderCompat`, `ExpandedChestBlockEntityRenderer`):**
   - Confirmed `ExpandedChestScreen#render` (`super.render(...)` -> `HandledScreen#renderBackground(DrawContext, int, int, float)`), `RenderCompat` (`DrawContext#drawTexture`, `drawText`, `drawTooltip`), and `ExpandedChestBlockEntityRenderer` (`ModelPart#render`, `chest.png` atlas batching) compile and run cleanly on `1.20.4`.
 - **Access Widener & DataGen (`expandedstorage.accesswidener`, `src/main/generated/`):**

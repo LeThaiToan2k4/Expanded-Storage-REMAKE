@@ -5,7 +5,6 @@ import com.thaistoanf.expandedstorage.compat.IdCompat;
 import com.thaistoanf.expandedstorage.core.ChestTier;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.minecraft.block.Block;
 import net.minecraft.block.MapColor;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -24,12 +23,18 @@ public final class ModBlocks {
     private static final Map<ChestTier, ExpandedChestBlock> BLOCKS = new EnumMap<>(ChestTier.class);
     private static final Map<ChestTier, BlockItem> ITEMS = new EnumMap<>(ChestTier.class);
 
-    public static final ExpandedChestBlock COPPER_CHEST = registerChest(ChestTier.COPPER, MapColor.ORANGE, BlockSoundGroup.COPPER);
-    public static final ExpandedChestBlock IRON_CHEST = registerChest(ChestTier.IRON, MapColor.IRON_GRAY, BlockSoundGroup.METAL);
-    public static final ExpandedChestBlock GOLD_CHEST = registerChest(ChestTier.GOLD, MapColor.GOLD, BlockSoundGroup.METAL);
-    public static final ExpandedChestBlock DIAMOND_CHEST = registerChest(ChestTier.DIAMOND, MapColor.DIAMOND_BLUE, BlockSoundGroup.METAL);
-    public static final ExpandedChestBlock OBSIDIAN_CHEST = registerChest(ChestTier.OBSIDIAN, MapColor.BLACK, BlockSoundGroup.STONE);
-    public static final ExpandedChestBlock NETHERITE_CHEST = registerChest(ChestTier.NETHERITE, MapColor.BLACK, BlockSoundGroup.NETHERITE);
+    public static final ExpandedChestBlock COPPER_CHEST = registerChest(ChestTier.COPPER, MapColor.ORANGE,
+            BlockSoundGroup.COPPER);
+    public static final ExpandedChestBlock IRON_CHEST = registerChest(ChestTier.IRON, MapColor.IRON_GRAY,
+            BlockSoundGroup.METAL);
+    public static final ExpandedChestBlock GOLD_CHEST = registerChest(ChestTier.GOLD, MapColor.GOLD,
+            BlockSoundGroup.METAL);
+    public static final ExpandedChestBlock DIAMOND_CHEST = registerChest(ChestTier.DIAMOND, MapColor.DIAMOND_BLUE,
+            BlockSoundGroup.METAL);
+    public static final ExpandedChestBlock OBSIDIAN_CHEST = registerChest(ChestTier.OBSIDIAN, MapColor.BLACK,
+            BlockSoundGroup.STONE);
+    public static final ExpandedChestBlock NETHERITE_CHEST = registerChest(ChestTier.NETHERITE, MapColor.BLACK,
+            BlockSoundGroup.NETHERITE);
 
     private ModBlocks() {
     }
