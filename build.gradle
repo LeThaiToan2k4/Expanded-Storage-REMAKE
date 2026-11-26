@@ -7,7 +7,7 @@ version = project.mod_version
 group = project.maven_group
 
 base {
-	// Produces: expandedstorage-rk-fabric-1.20.2-1.0.0.jar
+	// Produces: expandedstorage-rk-fabric-1.20.3-1.0.0.jar
 	archivesName = "${project.archives_base_name}-fabric-${project.minecraft_version}"
 }
 

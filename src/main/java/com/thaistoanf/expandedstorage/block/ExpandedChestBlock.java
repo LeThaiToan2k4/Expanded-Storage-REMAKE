@@ -53,8 +53,8 @@ public class ExpandedChestBlock extends ChestBlock {
                         title,
                         (syncId, playerInventory, player) -> {
                             if (first.checkUnlocked(player) && second.checkUnlocked(player)) {
-                                first.checkLootInteraction(player);
-                                second.checkLootInteraction(player);
+                                first.generateLoot(player);
+                                second.generateLoot(player);
                                 return new ExpandedChestScreenHandler(syncId, playerInventory, doubleInventory, tier, true);
                             }
                             return null;
@@ -70,7 +70,7 @@ public class ExpandedChestBlock extends ChestBlock {
                         single.getDisplayName(),
                         (syncId, playerInventory, player) -> {
                             if (single.checkUnlocked(player)) {
-                                single.checkLootInteraction(player);
+                                single.generateLoot(player);
                                 return new ExpandedChestScreenHandler(syncId, playerInventory, single, tier, false);
                             }
                             return null;

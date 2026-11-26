@@ -43,6 +43,5 @@
     "recipes": [
       "expandedstorage:copper_chest"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

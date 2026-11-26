@@ -100,7 +100,7 @@ public class ExpandedChestBlockEntity extends ChestBlockEntity {
     public void readNbt(NbtCompound nbt) {
         super.readNbt(nbt);
         DefaultedList<ItemStack> stacks = StorageCompat.createStackList(this.size());
-        if (!this.deserializeLootTable(nbt)) {
+        if (!this.readLootTable(nbt)) {
             StorageCompat.readInventory(nbt, stacks);
         }
         this.setInvStackList(stacks);
@@ -109,8 +109,8 @@ public class ExpandedChestBlockEntity extends ChestBlockEntity {
     @Override
     protected void writeNbt(NbtCompound nbt) {
         super.writeNbt(nbt);
-        if (!this.serializeLootTable(nbt)) {
-            StorageCompat.writeInventory(nbt, this.getInvStackList());
+        if (!this.writeLootTable(nbt)) {
+            StorageCompat.writeInventory(nbt, this.method_11282());
         }
     }
 

@@ -43,6 +43,5 @@
     "recipes": [
       "expandedstorage:netherite_chest_from_diamond_chest_smithing"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }
