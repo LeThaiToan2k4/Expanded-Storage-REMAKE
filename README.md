@@ -4,10 +4,10 @@
 
 # Expanded Storage
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://github.com/LeThaiToan2k4/Expanded-Storage-REMAKE/blob/Fabric-1.21.2/LICENSE)
-[![Minecraft](https://img.shields.io/badge/Minecraft-1.21.2-2E7D32?style=flat-square)](https://www.minecraft.net/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://github.com/LeThaiToan2k4/Expanded-Storage-REMAKE/blob/Fabric-1.21.3/LICENSE)
+[![Minecraft](https://img.shields.io/badge/Minecraft-1.21.3-2E7D32?style=flat-square)](https://www.minecraft.net/)
 [![Java](https://img.shields.io/badge/Java-21-ED8B00?style=flat-square)](https://adoptium.net/)
-[![Fabric API](https://img.shields.io/badge/Fabric_API-0.106.1%2B1.21.2-DBD0B4?style=flat-square&labelColor=38342A)](https://www.curseforge.com/minecraft/mc-mods/fabric-api)
+[![Fabric API](https://img.shields.io/badge/Fabric_API-0.114.1%2B1.21.3-DBD0B4?style=flat-square&labelColor=38342A)](https://www.curseforge.com/minecraft/mc-mods/fabric-api)
 [![CurseForge](https://img.shields.io/badge/CurseForge-Projects-F16436?style=flat-square)](https://www.curseforge.com/members/lethaitoan2k4/projects)
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-thaistoanf-FF5E5B?style=flat-square)](https://ko-fi.com/thaistoanf)
 
@@ -21,7 +21,7 @@
 
 ### Overview
 
-**Expanded Storage** is a clean-room remake inspired by the classic *Expanded Storage* mod concept, rewritten from scratch by **thaistoanf** for modern Fabric (`Minecraft 1.21.2`). It focuses strictly on pure Vanilla chest mechanics, high client/server performance, zero external library dependencies (requiring only **Fabric API**), and a flexible dynamic 9-slice GUI system.
+**Expanded Storage** is a clean-room remake inspired by the classic *Expanded Storage* mod concept, rewritten from scratch by **thaistoanf** for modern Fabric (`Minecraft 1.21.3`). It focuses strictly on pure Vanilla chest mechanics, high client/server performance, zero external library dependencies (requiring only **Fabric API**), and a flexible dynamic 9-slice GUI system.
 
 ### Key Features
 
@@ -63,13 +63,13 @@
 Requirements: **JDK 21** and Git.
 
 ```bash
-git clone -b Fabric-1.21.2 https://github.com/LeThaiToan2k4/Expanded-Storage-REMAKE.git
+git clone -b Fabric-1.21.3 https://github.com/LeThaiToan2k4/Expanded-Storage-REMAKE.git
 cd Expanded-Storage-REMAKE
 ./gradlew runDatagen
 ./gradlew build
 ```
 
-Output JAR: `build/libs/expandedstorage-rk-fabric-1.21.2-1.0.0.jar`
+Output JAR: `build/libs/expandedstorage-rk-fabric-1.21.3-1.0.0.jar`
 
 ### Credits and License
 
@@ -87,7 +87,7 @@ Output JAR: `build/libs/expandedstorage-rk-fabric-1.21.2-1.0.0.jar`
 
 ### Gioi Thieu
 
-**Expanded Storage** la phien ban lam lai doc lap (clean-room remake) lay cam hung tu y tuong mod *Expanded Storage* co dien, duoc **thaistoanf** viet lai hoan toan tu dau cho Fabric hien dai (`Minecraft 1.21.2`). Mod tap trung thuoc tinh ruong chuan Vanilla, toi uu hieu nang toi da, khong phu thuoc thu vien ngoai (chi can **Fabric API**), cung he thong giao dien 9-slice linh hoat.
+**Expanded Storage** la phien ban lam lai doc lap (clean-room remake) lay cam hung tu y tuong mod *Expanded Storage* co dien, duoc **thaistoanf** viet lai hoan toan tu dau cho Fabric hien dai (`Minecraft 1.21.3`). Mod tap trung thuoc tinh ruong chuan Vanilla, toi uu hieu nang toi da, khong phu thuoc thu vien ngoai (chi can **Fabric API**), cung he thong giao dien 9-slice linh hoat.
 
 ### Tinh Nang Noi Bat
 
@@ -116,13 +116,13 @@ Output JAR: `build/libs/expandedstorage-rk-fabric-1.21.2-1.0.0.jar`
 Yeu cau: **JDK 21** va Git.
 
 ```bash
-git clone -b Fabric-1.21.2 https://github.com/LeThaiToan2k4/Expanded-Storage-REMAKE.git
+git clone -b Fabric-1.21.3 https://github.com/LeThaiToan2k4/Expanded-Storage-REMAKE.git
 cd Expanded-Storage-REMAKE
 ./gradlew runDatagen
 ./gradlew build
 ```
 
-File JAR dau ra: `build/libs/expandedstorage-rk-fabric-1.21.2-1.0.0.jar`
+File JAR dau ra: `build/libs/expandedstorage-rk-fabric-1.21.3-1.0.0.jar`
 
 ### Ghi Nhan Ban Quyen va Lien Ket
 
