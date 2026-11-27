@@ -4,11 +4,14 @@ import com.thaistoanf.expandedstorage.block.ExpandedChestBlock;
 import com.thaistoanf.expandedstorage.compat.IdCompat;
 import com.thaistoanf.expandedstorage.core.ChestTier;
 import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.MapColor;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 
@@ -40,7 +43,11 @@ public final class ModBlocks {
 
     private static ExpandedChestBlock registerChest(ChestTier tier, MapColor mapColor, BlockSoundGroup sounds) {
         Identifier id = IdCompat.id(tier.blockId());
+        RegistryKey<Block> blockKey = RegistryKey.of(RegistryKeys.BLOCK, id);
+        RegistryKey<Item> itemKey = RegistryKey.of(RegistryKeys.ITEM, id);
+
         AbstractBlock.Settings blockSettings = AbstractBlock.Settings.create()
+                .registryKey(blockKey)
                 .mapColor(mapColor)
                 .strength(tier.hardness(), tier.blastResistance())
                 .sounds(sounds)
@@ -48,14 +55,16 @@ public final class ModBlocks {
                 .nonOpaque();
 
         ExpandedChestBlock block = new ExpandedChestBlock(tier, blockSettings, () -> ModBlockEntities.get(tier));
-        Registry.register(Registries.BLOCK, id, block);
+        Registry.register(Registries.BLOCK, blockKey, block);
 
-        Item.Settings itemSettings = new Item.Settings();
+        Item.Settings itemSettings = new Item.Settings()
+                .registryKey(itemKey)
+                .useBlockPrefixedTranslationKey();
         if (tier.fireproof()) {
             itemSettings.fireproof();
         }
         BlockItem blockItem = new BlockItem(block, itemSettings);
-        Registry.register(Registries.ITEM, id, blockItem);
+        Registry.register(Registries.ITEM, itemKey, blockItem);
 
         BLOCKS.put(tier, block);
         ITEMS.put(tier, blockItem);

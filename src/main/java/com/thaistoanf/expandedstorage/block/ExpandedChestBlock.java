@@ -36,7 +36,7 @@ public class ExpandedChestBlock extends ChestBlock {
             Settings settings,
             Supplier<BlockEntityType<? extends ChestBlockEntity>> entityTypeSupplier
     ) {
-        super(settings, entityTypeSupplier);
+        super(entityTypeSupplier, settings);
         this.tier = tier;
         this.screenRetriever = new DoubleBlockProperties.PropertyRetriever<>() {
             @Override

@@ -83,7 +83,7 @@ public final class RenderCompat {
     }
 
     public static void drawRegion(DrawContext ctx, Identifier tex, int x, int y, int u, int v, int width, int height) {
-        ctx.drawTexture(tex, x, y, u, v, width, height, TEX_SIZE, TEX_SIZE);
+        ctx.drawTexture(RenderLayer::getGuiTextured, tex, x, y, (float) u, (float) v, width, height, TEX_SIZE, TEX_SIZE);
     }
 
     private static void drawTiledRegion(
