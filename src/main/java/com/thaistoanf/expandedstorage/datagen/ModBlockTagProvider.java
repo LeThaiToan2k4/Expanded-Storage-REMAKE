@@ -21,11 +21,11 @@ public class ModBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
     @Override
     protected void configure(RegistryWrapper.WrapperLookup arg) {
-        var pickaxe = getOrCreateTagBuilder(BlockTags.PICKAXE_MINEABLE);
-        var stone = getOrCreateTagBuilder(BlockTags.NEEDS_STONE_TOOL);
-        var iron = getOrCreateTagBuilder(BlockTags.NEEDS_IRON_TOOL);
-        var diamond = getOrCreateTagBuilder(BlockTags.NEEDS_DIAMOND_TOOL);
-        var piglins = getOrCreateTagBuilder(BlockTags.GUARDED_BY_PIGLINS);
+        var pickaxe = valueLookupBuilder(BlockTags.PICKAXE_MINEABLE);
+        var stone = valueLookupBuilder(BlockTags.NEEDS_STONE_TOOL);
+        var iron = valueLookupBuilder(BlockTags.NEEDS_IRON_TOOL);
+        var diamond = valueLookupBuilder(BlockTags.NEEDS_DIAMOND_TOOL);
+        var piglins = valueLookupBuilder(BlockTags.GUARDED_BY_PIGLINS);
 
         for (ChestTier tier : ChestTier.values()) {
             ExpandedChestBlock block = ModBlocks.get(tier);

@@ -6,6 +6,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.enums.ChestType;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.RenderLayer;
@@ -72,18 +73,18 @@ public final class RenderCompat {
     }
 
     public static int titleColor(boolean dark) {
-        return dark ? 0xE6E9EF : 0x404040;
+        return dark ? 0xFFE6E9EF : 0xFF404040;
     }
 
     public static int tabTextColor(boolean dark, boolean active) {
         if (dark) {
-            return active ? 0xFFF3C4 : 0x9CA3AF;
+            return active ? 0xFFFFF3C4 : 0xFF9CA3AF;
         }
-        return active ? 0x2B2B2B : 0x585858;
+        return active ? 0xFF2B2B2B : 0xFF585858;
     }
 
     public static void drawRegion(DrawContext ctx, Identifier tex, int x, int y, int u, int v, int width, int height) {
-        ctx.drawTexture(RenderLayer::getGuiTextured, tex, x, y, (float) u, (float) v, width, height, TEX_SIZE, TEX_SIZE);
+        ctx.drawTexture(RenderPipelines.GUI_TEXTURED, tex, x, y, (float) u, (float) v, width, height, TEX_SIZE, TEX_SIZE);
     }
 
     private static void drawTiledRegion(

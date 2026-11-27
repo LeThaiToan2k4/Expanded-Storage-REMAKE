@@ -3,14 +3,14 @@ package com.thaistoanf.expandedstorage.compat;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.util.collection.DefaultedList;
 
 /**
- * Isolates NBT inventory serialization and container utility helpers across Minecraft versions
- * (e.g. {@code Inventories.readNbt} gaining {@code WrapperLookup} in 1.20.5+).
+ * Isolates inventory serialization ({@link ReadView} / {@link WriteView} in 1.21.6+)
+ * and container utility helpers across Minecraft versions.
  */
 public final class StorageCompat {
     private StorageCompat() {
@@ -20,20 +20,12 @@ public final class StorageCompat {
         return DefaultedList.ofSize(size, ItemStack.EMPTY);
     }
 
-    public static void readInventory(
-            NbtCompound nbt,
-            DefaultedList<ItemStack> stacks,
-            RegistryWrapper.WrapperLookup registries
-    ) {
-        Inventories.readNbt(nbt, stacks, registries);
+    public static void readInventory(ReadView view, DefaultedList<ItemStack> stacks) {
+        Inventories.readData(view, stacks);
     }
 
-    public static void writeInventory(
-            NbtCompound nbt,
-            DefaultedList<ItemStack> stacks,
-            RegistryWrapper.WrapperLookup registries
-    ) {
-        Inventories.writeNbt(nbt, stacks, registries);
+    public static void writeInventory(WriteView view, DefaultedList<ItemStack> stacks) {
+        Inventories.writeData(view, stacks);
     }
 
     public static int calculateComparatorSignal(Inventory inventory) {

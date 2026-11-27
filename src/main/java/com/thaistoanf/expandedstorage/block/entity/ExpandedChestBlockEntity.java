@@ -16,12 +16,12 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.DoubleInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
@@ -29,7 +29,8 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 /**
- * Tiered chest block entity with zero server tick overhead, dormant-when-closed client lid animation,
+ * Tiered chest block entity with zero server tick overhead, dormant-when-closed
+ * client lid animation,
  * and accurate viewer tracking for {@link ExpandedChestScreenHandler}.
  */
 public class ExpandedChestBlockEntity extends ChestBlockEntity {
@@ -51,7 +52,8 @@ public class ExpandedChestBlockEntity extends ChestBlockEntity {
         }
 
         @Override
-        protected void onViewerCountUpdate(World world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {
+        protected void onViewerCountUpdate(World world, BlockPos pos, BlockState state, int oldViewerCount,
+                int newViewerCount) {
             ExpandedChestBlockEntity.this.onViewerCountUpdate(world, pos, state, oldViewerCount, newViewerCount);
         }
 
@@ -60,7 +62,8 @@ public class ExpandedChestBlockEntity extends ChestBlockEntity {
             if (player.currentScreenHandler instanceof ExpandedChestScreenHandler handler) {
                 Inventory inv = handler.getInventory();
                 return inv == ExpandedChestBlockEntity.this
-                        || (inv instanceof DoubleInventory doubleInv && doubleInv.isPart(ExpandedChestBlockEntity.this));
+                        || (inv instanceof DoubleInventory doubleInv
+                                && doubleInv.isPart(ExpandedChestBlockEntity.this));
             }
             return false;
         }
@@ -98,20 +101,20 @@ public class ExpandedChestBlockEntity extends ChestBlockEntity {
     }
 
     @Override
-    protected void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
-        super.readNbt(nbt, registryLookup);
+    protected void readData(ReadView view) {
+        super.readData(view);
         DefaultedList<ItemStack> stacks = StorageCompat.createStackList(this.size());
-        if (!this.readLootTable(nbt)) {
-            StorageCompat.readInventory(nbt, stacks, registryLookup);
+        if (!this.readLootTable(view)) {
+            StorageCompat.readInventory(view, stacks);
         }
         this.setHeldStacks(stacks);
     }
 
     @Override
-    protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
-        super.writeNbt(nbt, registryLookup);
-        if (!this.writeLootTable(nbt)) {
-            StorageCompat.writeInventory(nbt, this.getHeldStacks(), registryLookup);
+    protected void writeData(WriteView view) {
+        super.writeData(view);
+        if (!this.writeLootTable(view)) {
+            StorageCompat.writeInventory(view, this.getHeldStacks());
         }
     }
 
@@ -134,7 +137,8 @@ public class ExpandedChestBlockEntity extends ChestBlockEntity {
         if (!(entity instanceof ExpandedChestBlockEntity chest)) {
             return;
         }
-        // Zero idle tick work when chest is closed and lid animation has fully settled at 0.
+        // Zero idle tick work when chest is closed and lid animation has fully settled
+        // at 0.
         if (!chest.lidOpen
                 && chest.viewerManager.getViewerCount() == 0
                 && chest.customLidAnimator.getProgress(1.0f) <= 0.0f
@@ -186,7 +190,6 @@ public class ExpandedChestBlockEntity extends ChestBlockEntity {
         world.playSound(
                 null, x, y, z,
                 soundEvent, SoundCategory.BLOCKS,
-                0.5f, world.random.nextFloat() * 0.1f + 0.9f
-        );
+                0.5f, world.random.nextFloat() * 0.1f + 0.9f);
     }
 }
