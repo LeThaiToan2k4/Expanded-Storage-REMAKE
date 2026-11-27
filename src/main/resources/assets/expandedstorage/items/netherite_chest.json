@@ -1,0 +1,10 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "expandedstorage:item/netherite_chest",
+    "model": {
+      "type": "minecraft:chest",
+      "texture": "expandedstorage:netherite/normal"
+    }
+  }
+}

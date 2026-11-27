@@ -86,7 +86,7 @@ public class ExpandedChestBlockEntityRenderer implements BlockEntityRenderer<Exp
         }
 
         matrices.push();
-        float rotation = state.get(ChestBlock.FACING).asRotation();
+        float rotation = state.get(ChestBlock.FACING).getPositiveHorizontalDegrees();
         matrices.translate(0.5f, 0.5f, 0.5f);
         matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-rotation));
         matrices.translate(-0.5f, -0.5f, -0.5f);
