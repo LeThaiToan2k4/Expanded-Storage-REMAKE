@@ -3,7 +3,6 @@
   "addition": "minecraft:netherite_ingot",
   "base": "expandedstorage:obsidian_chest",
   "result": {
-    "count": 1,
     "id": "expandedstorage:netherite_chest"
   },
   "template": "minecraft:netherite_upgrade_smithing_template"

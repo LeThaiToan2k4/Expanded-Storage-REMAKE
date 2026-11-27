@@ -25,6 +25,7 @@ import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.RotationAxis;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 /**
@@ -71,7 +72,8 @@ public class ExpandedChestBlockEntityRenderer implements BlockEntityRenderer<Exp
             MatrixStack matrices,
             VertexConsumerProvider vertexConsumers,
             int light,
-            int overlay
+            int overlay,
+            Vec3d cameraPos
     ) {
         World world = entity.getWorld();
         boolean inWorld = world != null;
