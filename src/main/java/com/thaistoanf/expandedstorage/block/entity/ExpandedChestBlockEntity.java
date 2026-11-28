@@ -11,6 +11,7 @@ import net.minecraft.block.enums.ChestType;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.ChestLidAnimator;
 import net.minecraft.block.entity.ViewerCountManager;
+import net.minecraft.entity.ContainerUser;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.DoubleInventory;
@@ -27,6 +28,8 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 /**
  * Tiered chest block entity with zero server tick overhead, dormant-when-closed
@@ -58,7 +61,7 @@ public class ExpandedChestBlockEntity extends ChestBlockEntity {
         }
 
         @Override
-        protected boolean isPlayerViewing(PlayerEntity player) {
+        public boolean isPlayerViewing(PlayerEntity player) {
             if (player.currentScreenHandler instanceof ExpandedChestScreenHandler handler) {
                 Inventory inv = handler.getInventory();
                 return inv == ExpandedChestBlockEntity.this
@@ -149,17 +152,36 @@ public class ExpandedChestBlockEntity extends ChestBlockEntity {
     }
 
     @Override
-    public void onOpen(PlayerEntity player) {
-        if (!this.removed && !player.isSpectator() && this.getWorld() != null) {
-            this.viewerManager.openContainer(player, this.getWorld(), this.getPos(), this.getCachedState());
+    public void onOpen(ContainerUser user) {
+        if (!this.removed && !user.asLivingEntity().isSpectator() && this.getWorld() != null) {
+            this.viewerManager.openContainer(
+                    user.asLivingEntity(),
+                    this.getWorld(),
+                    this.getPos(),
+                    this.getCachedState(),
+                    user.getContainerInteractionRange()
+            );
         }
     }
 
     @Override
-    public void onClose(PlayerEntity player) {
-        if (!this.removed && !player.isSpectator() && this.getWorld() != null) {
-            this.viewerManager.closeContainer(player, this.getWorld(), this.getPos(), this.getCachedState());
+    public void onClose(ContainerUser user) {
+        if (!this.removed && !user.asLivingEntity().isSpectator() && this.getWorld() != null) {
+            this.viewerManager.closeContainer(
+                    user.asLivingEntity(),
+                    this.getWorld(),
+                    this.getPos(),
+                    this.getCachedState()
+            );
         }
+    }
+
+    @Override
+    public List<ContainerUser> getViewingUsers() {
+        if (this.getWorld() == null) {
+            return List.of();
+        }
+        return this.viewerManager.getViewingUsers(this.getWorld(), this.getPos());
     }
 
     @Override

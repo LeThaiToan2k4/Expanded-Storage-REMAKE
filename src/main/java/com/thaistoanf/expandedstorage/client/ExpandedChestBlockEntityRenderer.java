@@ -2,6 +2,7 @@ package com.thaistoanf.expandedstorage.client;
 
 import com.thaistoanf.expandedstorage.block.entity.ExpandedChestBlockEntity;
 import com.thaistoanf.expandedstorage.compat.RenderCompat;
+import com.thaistoanf.expandedstorage.core.ChestTier;
 import com.thaistoanf.expandedstorage.registry.ModBlocks;
 import it.unimi.dsi.fastutil.floats.Float2FloatFunction;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
@@ -14,13 +15,16 @@ import net.minecraft.block.ChestBlock;
 import net.minecraft.block.DoubleBlockProperties;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.enums.ChestType;
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.block.entity.LightmapCoordinatesRetriever;
+import net.minecraft.client.render.block.entity.model.ChestBlockModel;
+import net.minecraft.client.render.block.entity.state.ChestBlockEntityRenderState;
+import net.minecraft.client.render.command.ModelCommandRenderer;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
+import net.minecraft.client.render.state.CameraRenderState;
+import net.minecraft.client.texture.SpriteHolder;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Direction;
@@ -29,106 +33,101 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 /**
- * Renders single and double tiered chests using the vanilla chest geometry and
- * sprites batched inside {@code minecraft:textures/atlas/chest.png}.
+ * Renders single and double tiered chests in Minecraft 1.21.9+ using
+ * {@link ChestBlockModel},
+ * {@link OrderedRenderCommandQueue}, and sprites batched inside
+ * {@code minecraft:textures/atlas/chest.png}.
  */
 @Environment(EnvType.CLIENT)
-public class ExpandedChestBlockEntityRenderer implements BlockEntityRenderer<ExpandedChestBlockEntity> {
-    private static final String BASE = "bottom";
-    private static final String LID = "lid";
-    private static final String LATCH = "lock";
+public class ExpandedChestBlockEntityRenderer
+        implements BlockEntityRenderer<ExpandedChestBlockEntity, ExpandedChestBlockEntityRenderer.RenderState> {
+    private final SpriteHolder materials;
+    private final ChestBlockModel singleChest;
+    private final ChestBlockModel doubleChestLeft;
+    private final ChestBlockModel doubleChestRight;
 
-    private final ModelPart singleLid;
-    private final ModelPart singleBase;
-    private final ModelPart singleLatch;
-    private final ModelPart doubleLeftLid;
-    private final ModelPart doubleLeftBase;
-    private final ModelPart doubleLeftLatch;
-    private final ModelPart doubleRightLid;
-    private final ModelPart doubleRightBase;
-    private final ModelPart doubleRightLatch;
+    public static class RenderState extends ChestBlockEntityRenderState {
+        public ChestTier tier = ChestTier.COPPER;
+    }
 
     public ExpandedChestBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {
-        ModelPart single = ctx.getLayerModelPart(EntityModelLayers.CHEST);
-        this.singleBase = single.getChild(BASE);
-        this.singleLid = single.getChild(LID);
-        this.singleLatch = single.getChild(LATCH);
+        this.materials = ctx.spriteHolder();
+        this.singleChest = new ChestBlockModel(ctx.getLayerModelPart(EntityModelLayers.CHEST));
+        this.doubleChestLeft = new ChestBlockModel(ctx.getLayerModelPart(EntityModelLayers.DOUBLE_CHEST_LEFT));
+        this.doubleChestRight = new ChestBlockModel(ctx.getLayerModelPart(EntityModelLayers.DOUBLE_CHEST_RIGHT));
+    }
 
-        ModelPart left = ctx.getLayerModelPart(EntityModelLayers.DOUBLE_CHEST_LEFT);
-        this.doubleLeftBase = left.getChild(BASE);
-        this.doubleLeftLid = left.getChild(LID);
-        this.doubleLeftLatch = left.getChild(LATCH);
+    @Override
+    public RenderState createRenderState() {
+        return new RenderState();
+    }
 
-        ModelPart right = ctx.getLayerModelPart(EntityModelLayers.DOUBLE_CHEST_RIGHT);
-        this.doubleRightBase = right.getChild(BASE);
-        this.doubleRightLid = right.getChild(LID);
-        this.doubleRightLatch = right.getChild(LATCH);
+    @Override
+    public void updateRenderState(
+            ExpandedChestBlockEntity entity,
+            RenderState state,
+            float tickProgress,
+            Vec3d cameraPos,
+            ModelCommandRenderer.CrumblingOverlayCommand crumblingOverlay) {
+        BlockEntityRenderer.super.updateRenderState(entity, state, tickProgress, cameraPos, crumblingOverlay);
+        state.tier = entity.getTier();
+
+        World world = entity.getWorld();
+        boolean inWorld = world != null;
+        BlockState blockState = inWorld
+                ? entity.getCachedState()
+                : ModBlocks.get(entity.getTier()).getDefaultState().with(ChestBlock.FACING, Direction.SOUTH);
+
+        state.chestType = blockState.contains(ChestBlock.CHEST_TYPE) ? blockState.get(ChestBlock.CHEST_TYPE)
+                : ChestType.SINGLE;
+        state.yaw = blockState.get(ChestBlock.FACING).getPositiveHorizontalDegrees();
+
+        @SuppressWarnings("unchecked")
+        DoubleBlockProperties.PropertySource<? extends ChestBlockEntity> source = (inWorld
+                && blockState.getBlock() instanceof AbstractChestBlock<?> abstractChest)
+                        ? ((AbstractChestBlock<ChestBlockEntity>) abstractChest).getBlockEntitySource(blockState, world,
+                                entity.getPos(), true)
+                        : DoubleBlockProperties.PropertyRetriever::getFallback;
+
+        Float2FloatFunction progressFn = source.apply(ChestBlock.getAnimationProgressRetriever(entity));
+        state.lidAnimationProgress = progressFn.get(tickProgress);
+
+        if (state.chestType != ChestType.SINGLE) {
+            Int2IntFunction lightFn = source.apply(new LightmapCoordinatesRetriever<>());
+            state.lightmapCoordinates = lightFn.applyAsInt(state.lightmapCoordinates);
+        }
     }
 
     @Override
     public void render(
-            ExpandedChestBlockEntity entity,
-            float tickDelta,
+            RenderState state,
             MatrixStack matrices,
-            VertexConsumerProvider vertexConsumers,
-            int light,
-            int overlay,
-            Vec3d cameraPos
-    ) {
-        World world = entity.getWorld();
-        boolean inWorld = world != null;
-        BlockState state = inWorld
-                ? entity.getCachedState()
-                : ModBlocks.get(entity.getTier()).getDefaultState().with(ChestBlock.FACING, Direction.SOUTH);
-
-        ChestType chestType = state.contains(ChestBlock.CHEST_TYPE) ? state.get(ChestBlock.CHEST_TYPE) : ChestType.SINGLE;
-        Block block = state.getBlock();
-        if (!(block instanceof AbstractChestBlock<?> abstractChest)) {
-            return;
-        }
-
+            OrderedRenderCommandQueue queue,
+            CameraRenderState cameraState) {
         matrices.push();
-        float rotation = state.get(ChestBlock.FACING).getPositiveHorizontalDegrees();
         matrices.translate(0.5f, 0.5f, 0.5f);
-        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-rotation));
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-state.yaw));
         matrices.translate(-0.5f, -0.5f, -0.5f);
 
-        @SuppressWarnings("unchecked")
-        DoubleBlockProperties.PropertySource<? extends ChestBlockEntity> source = inWorld
-                ? ((AbstractChestBlock<ChestBlockEntity>) abstractChest).getBlockEntitySource(state, world, entity.getPos(), true)
-                : DoubleBlockProperties.PropertyRetriever::getFallback;
-
-        Float2FloatFunction progressFn = source.apply(ChestBlock.getAnimationProgressRetriever(entity));
-        float openFactor = 1.0f - progressFn.get(tickDelta);
+        float openFactor = 1.0f - state.lidAnimationProgress;
         openFactor = 1.0f - openFactor * openFactor * openFactor;
 
-        Int2IntFunction lightFn = source.apply(new LightmapCoordinatesRetriever<>());
-        int packedLight = lightFn.applyAsInt(light);
+        SpriteIdentifier spriteId = RenderCompat.getChestSprite(state.tier, state.chestType);
+        ChestBlockModel model = switch (state.chestType) {
+            case LEFT -> this.doubleChestLeft;
+            case RIGHT -> this.doubleChestRight;
+            default -> this.singleChest;
+        };
 
-        SpriteIdentifier sprite = RenderCompat.getChestSprite(entity.getTier(), chestType);
-        VertexConsumer vertices = RenderCompat.getChestVertexConsumer(vertexConsumers, sprite);
-
-        if (chestType != ChestType.SINGLE) {
-            if (chestType == ChestType.LEFT) {
-                RenderCompat.renderChestParts(
-                        matrices, vertices,
-                        this.doubleLeftLid, this.doubleLeftLatch, this.doubleLeftBase,
-                        openFactor, packedLight, overlay
-                );
-            } else {
-                RenderCompat.renderChestParts(
-                        matrices, vertices,
-                        this.doubleRightLid, this.doubleRightLatch, this.doubleRightBase,
-                        openFactor, packedLight, overlay
-                );
-            }
-        } else {
-            RenderCompat.renderChestParts(
-                    matrices, vertices,
-                    this.singleLid, this.singleLatch, this.singleBase,
-                    openFactor, packedLight, overlay
-            );
-        }
+        RenderCompat.submitChestModel(
+                queue,
+                model,
+                openFactor,
+                matrices,
+                this.materials,
+                spriteId,
+                state.lightmapCoordinates,
+                state.crumblingOverlay);
 
         matrices.pop();
     }

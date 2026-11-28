@@ -7,6 +7,7 @@ import com.thaistoanf.expandedstorage.core.LayoutCalculator;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.sound.PositionedSoundInstance;
@@ -222,15 +223,15 @@ public class ExpandedChestScreen extends HandledScreen<ExpandedChestScreenHandle
     }
 
     @Override
-    protected boolean isClickOutsideBounds(double mouseX, double mouseY, int left, int top, int button) {
+    protected boolean isClickOutsideBounds(double mouseX, double mouseY, int left, int top) {
         return !this.layout.containsPoint(mouseX - left, mouseY - top);
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (button == 0) {
-            double relX = mouseX - this.x;
-            double relY = mouseY - this.y;
+    public boolean mouseClicked(Click click, boolean doubled) {
+        if (click.button() == 0) {
+            double relX = click.x() - this.x;
+            double relY = click.y() - this.y;
 
             if (this.layout.modeButton().contains(relX, relY)) {
                 ClientConfig.get().setGuiMode(ClientConfig.get().guiMode().next());
@@ -262,16 +263,16 @@ public class ExpandedChestScreen extends HandledScreen<ExpandedChestScreenHandle
                 }
             }
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(click, doubled);
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+    public boolean mouseReleased(Click click) {
         if (this.suppressNextRelease) {
             this.suppressNextRelease = false;
             return true;
         }
-        return super.mouseReleased(mouseX, mouseY, button);
+        return super.mouseReleased(click);
     }
 
     private static void playClickSound() {

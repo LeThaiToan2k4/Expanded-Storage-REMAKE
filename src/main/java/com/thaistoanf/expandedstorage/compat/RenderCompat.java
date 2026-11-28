@@ -8,11 +8,14 @@ import net.minecraft.block.enums.ChestType;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.TexturedRenderLayers;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.block.entity.model.ChestBlockModel;
+import net.minecraft.client.render.command.ModelCommandRenderer;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
+import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.texture.SpriteHolder;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
@@ -214,24 +217,33 @@ public final class RenderCompat {
         };
     }
 
-    public static VertexConsumer getChestVertexConsumer(VertexConsumerProvider consumers, SpriteIdentifier sprite) {
-        return sprite.getVertexConsumer(consumers, RenderLayer::getEntityCutout);
+    public static RenderLayer getChestRenderLayer(SpriteIdentifier sprite) {
+        return sprite.getRenderLayer(RenderLayer::getEntityCutout);
     }
 
-    public static void renderChestParts(
-            MatrixStack matrices,
-            VertexConsumer vertices,
-            ModelPart lid,
-            ModelPart latch,
-            ModelPart base,
+    public static void submitChestModel(
+            OrderedRenderCommandQueue queue,
+            ChestBlockModel model,
             float openFactor,
+            MatrixStack matrices,
+            SpriteHolder materials,
+            SpriteIdentifier spriteId,
             int light,
-            int overlay
+            ModelCommandRenderer.CrumblingOverlayCommand crumblingOverlay
     ) {
-        lid.pitch = -(openFactor * ((float) Math.PI / 2.0f));
-        latch.pitch = lid.pitch;
-        lid.render(matrices, vertices, light, overlay);
-        latch.render(matrices, vertices, light, overlay);
-        base.render(matrices, vertices, light, overlay);
+        RenderLayer layer = getChestRenderLayer(spriteId);
+        Sprite sprite = materials.getSprite(spriteId);
+        queue.submitModel(
+                model,
+                openFactor,
+                matrices,
+                layer,
+                light,
+                OverlayTexture.DEFAULT_UV,
+                -1,
+                sprite,
+                0,
+                crumblingOverlay
+        );
     }
 }

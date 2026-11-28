@@ -15,8 +15,10 @@ import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.inventory.DoubleInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.screen.NamedScreenHandlerFactory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 import java.util.Optional;
@@ -36,7 +38,7 @@ public class ExpandedChestBlock extends ChestBlock {
             Settings settings,
             Supplier<BlockEntityType<? extends ChestBlockEntity>> entityTypeSupplier
     ) {
-        super(entityTypeSupplier, settings);
+        super(entityTypeSupplier, SoundEvents.BLOCK_CHEST_OPEN, SoundEvents.BLOCK_CHEST_CLOSE, settings);
         this.tier = tier;
         this.screenRetriever = new DoubleBlockProperties.PropertyRetriever<>() {
             @Override
@@ -100,13 +102,13 @@ public class ExpandedChestBlock extends ChestBlock {
     }
 
     @Override
-    public int getComparatorOutput(BlockState state, World world, BlockPos pos) {
+    protected int getComparatorOutput(BlockState state, World world, BlockPos pos, Direction direction) {
         return StorageCompat.calculateComparatorSignal(ChestBlock.getInventory(this, state, world, pos, false));
     }
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
         // Server chests require zero per-tick updates; client chests skip work whenever closed and idle.
-        return world.isClient ? validateTicker(type, this.getExpectedEntityType(), ExpandedChestBlockEntity::clientTick) : null;
+        return world.isClient() ? validateTicker(type, this.getExpectedEntityType(), ExpandedChestBlockEntity::clientTick) : null;
     }
 }
