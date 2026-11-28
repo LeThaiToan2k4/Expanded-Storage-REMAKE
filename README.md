@@ -25,7 +25,7 @@
 
 ### Key Features
 
-- **Six Balanced Chest Tiers:** Copper, Iron, Gold, Diamond, Obsidian, and Netherite chests scaling cleanly from `36` slots up to `270` slots in a double chest.
+- **Six Balanced Chest Tiers:** Expanded Copper, Iron, Gold, Diamond, Obsidian, and Netherite chests scaling cleanly from `36` slots up to `270` slots in a double chest.
 - **Authentic Vanilla Chest Behavior:** Same-tier side-by-side double chest merging, `Shift`-click isolated placement, lid open/close animations and sounds, cat and solid-block obstruction checks, full Hopper (`Inventory` + `DoubleInventory`) support, and accurate Redstone Comparator output.
 - **Seamless T-Shape 9-Slice GUI:** Renders a tightly fitted top chest panel stitched seamlessly onto a centered `176 x 96 px` player inventory panel with no double border and transparent click-through flanks.
 - **Three Switchable Layout Modes:** Cycle instantly in-game between **Adaptive Grid**, **Split-Wing** (for double chests), and **Smart Tabbed** (with automatic small-screen fallback).
@@ -36,14 +36,14 @@
 
 | Tier | Block ID | Single Slots | Double Slots | Blast Resistance | Special Properties | Upgrade Recipe |
 | :--- | :--- | :---: | :---: | :---: | :--- | :--- |
-| **Copper Chest** | `expandedstorage:copper_chest` | 36 | 72 | 6.0 | Stone Pickaxe+ | 1 Vanilla Chest + 8 Copper Ingots |
-| **Iron Chest** | `expandedstorage:iron_chest` | 54 | 108 | 6.0 | Stone Pickaxe+ | 1 Copper Chest + 8 Iron Ingots |
+| **Expanded Copper Chest** | `expandedstorage:copper_chest` | 36 | 72 | 6.0 | Stone Pickaxe+ | 1 Vanilla Chest + 7 Copper Ingots + 1 Copper Block (bottom-center / slot 8) |
+| **Iron Chest** | `expandedstorage:iron_chest` | 54 | 108 | 6.0 | Stone Pickaxe+ | 1 Expanded Copper Chest + 8 Iron Ingots |
 | **Gold Chest** | `expandedstorage:gold_chest` | 81 | 162 | 6.0 | Iron Pickaxe+ | 1 Iron Chest + 8 Gold Ingots |
 | **Diamond Chest** | `expandedstorage:diamond_chest` | 108 | 216 | 6.0 | Iron Pickaxe+ | 1 Gold Chest + 2 Diamonds (left/right) + 6 Glass |
 | **Obsidian Chest** | `expandedstorage:obsidian_chest` | 108 | 216 | 1200.0 | Explosion-proof, Diamond Pickaxe+ | 1 Diamond Chest + 8 Obsidian |
 | **Netherite Chest** | `expandedstorage:netherite_chest` | 135 | 270 | 1200.0 | Explosion-proof, Fireproof/Lava-proof | Smithing: Template + Diamond OR Obsidian Chest + Netherite Ingot |
 
-> **Note:** Breaking a chest drops the chest item and spills its contents normally like Vanilla Minecraft. Upgrades are performed in a Crafting Table or Smithing Table using an empty chest.
+> **Note:** Breaking a chest drops the chest item and spills its contents normally like Vanilla Minecraft. Upgrades are performed in a Crafting Table or Smithing Table using an empty chest. On Minecraft `1.21.9+`, `expandedstorage:copper_chest` is displayed as **Expanded Copper Chest** and uses a Copper Block at slot 8 (bottom-center) with a Vanilla Chest to avoid recipe conflicts with Vanilla's `minecraft:copper_chest`; the Iron Chest strictly requires `expandedstorage:copper_chest` and does not accept Vanilla Copper Chests.
 
 ### Dynamic GUI System
 
@@ -91,7 +91,7 @@ Output JAR: `build/libs/expandedstorage-rk-fabric-1.21.9-1.0.0.jar`
 
 ### Tinh Nang Noi Bat
 
-- **6 Cap Do Ruong Can Bang:** Ruong Dong (Copper), Sat (Iron), Vang (Gold), Kim Cuong (Diamond), Hac Dien Thach (Obsidian) va Netherite, mo rong suc chua tu `36` o den toi da `270` o khi ghep ruong doi.
+- **6 Cap Do Ruong Can Bang:** Ruong Dong Mo Rong (Expanded Copper), Sat (Iron), Vang (Gold), Kim Cuong (Diamond), Hac Dien Thach (Obsidian) va Netherite, mo rong suc chua tu `36` o den toi da `270` o khi ghep ruong doi.
 - **Co Che Chuan Vanilla:** Tu dong ghep ruong doi khi dat 2 ruong cung cap canh nhau, giu `Shift` khi dat de tach rieng, hoat anh va am thanh dong/mo nap, kiem tra vat can va meo ngoi tren ruong, tuong thich hoan toan voi Pheu (Hopper) va Mach So Sanh Redstone (Comparator).
 - **Khung Giao Dien Chu T Lien Mach:** Ket hop khung ruong phia tren voi khung tui do nguoi choi `176 x 96 px` o giua phia duoi khong bi vien doi, hai vung trong hai ben hoan toan xuyen thau khi click tha vat pham.
 - **3 Che Do Bo Cuc Linh Hoat:** Chuyen doi tuc thi giua **Luoi Thich Ung (Adaptive Grid)**, **Chia Hai Canh (Split-Wing)** va **Phan Trang Tab (Smart Tabbed)** (tu dong kich hoat khi cua so game nho).
@@ -102,14 +102,14 @@ Output JAR: `build/libs/expandedstorage-rk-fabric-1.21.9-1.0.0.jar`
 
 | Cap Ruong | ID Khoi | Ruong Don | Ruong Doi | Khang No | Thuoc Tinh Dac Biet | Cong Thuc Nang Cap |
 | :--- | :--- | :---: | :---: | :---: | :--- | :--- |
-| **Ruong Dong** | `expandedstorage:copper_chest` | 36 | 72 | 6.0 | Cup Da tro len | 1 Ruong Go + 8 Thoi Dong |
-| **Ruong Sat** | `expandedstorage:iron_chest` | 54 | 108 | 6.0 | Cup Da tro len | 1 Ruong Dong + 8 Thoi Sat |
+| **Ruong Dong Mo Rong** | `expandedstorage:copper_chest` | 36 | 72 | 6.0 | Cup Da tro len | 1 Ruong Go + 7 Thoi Dong + 1 Khoi Dong (o giua hang duoi / o so 8) |
+| **Ruong Sat** | `expandedstorage:iron_chest` | 54 | 108 | 6.0 | Cup Da tro len | 1 Ruong Dong Mo Rong + 8 Thoi Sat |
 | **Ruong Vang** | `expandedstorage:gold_chest` | 81 | 162 | 6.0 | Cup Sat tro len | 1 Ruong Sat + 8 Thoi Vang |
 | **Ruong Kim Cuong** | `expandedstorage:diamond_chest` | 108 | 216 | 6.0 | Cup Sat tro len | 1 Ruong Vang + 2 Kim Cuong (trai/phai) + 6 Kinh |
 | **Ruong Hac Dien Thach** | `expandedstorage:obsidian_chest` | 108 | 216 | 1200.0 | Khang no, Cup Kim Cuong+ | 1 Ruong Kim Cuong + 8 Hac Dien Thach |
 | **Ruong Netherite** | `expandedstorage:netherite_chest` | 135 | 270 | 1200.0 | Khang no, Khang lua/dung nham | Ban Ren: Khuon Nang Cap + Ruong Kim Cuong HOAC Hac Dien Thach + Thoi Netherite |
 
-> **Luu y:** Khi pha vo ruong, ruong va vat pham ben trong se roi ra binh thuong nhu Vanilla. Viec nang cap thuc hien tren Ban Che Tao hoac Ban Ren voi ruong trong.
+> **Luu y:** Khi pha vo ruong, ruong va vat pham ben trong se roi ra binh thuong nhu Vanilla. Viec nang cap thuc hien tren Ban Che Tao hoac Ban Ren voi ruong trong. Tren Minecraft `1.21.9+`, `expandedstorage:copper_chest` co ten hien thi la **Ruong Dong Mo Rong** va dung 1 Khoi Dong tai o so 8 (giua hang duoi) cung Ruong Go Vanilla de tranh xung dot voi `minecraft:copper_chest` cua Vanilla; Ruong Sat chi chap nhan `expandedstorage:copper_chest` va khong dung Ruong Dong Vanilla.
 
 ### Huong Dan Build Tu Ma Nguon
 

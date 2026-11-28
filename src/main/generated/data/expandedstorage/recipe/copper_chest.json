@@ -2,13 +2,14 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
+    "B": "minecraft:copper_block",
     "C": "minecraft:chest",
-    "M": "minecraft:copper_ingot"
+    "I": "minecraft:copper_ingot"
   },
   "pattern": [
-    "MMM",
-    "MCM",
-    "MMM"
+    "III",
+    "ICI",
+    "IBI"
   ],
   "result": {
     "count": 1,

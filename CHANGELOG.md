@@ -9,9 +9,17 @@ All notable changes for the **Expanded Storage** Minecraft `1.21.9` Fabric port 
 - **Fabric Loader:** `0.20.1`
 - **Yarn Mappings:** `1.21.9+build.1`
 - **Fabric API:** `0.134.1+1.21.9`
-- **Java Toolchain:** JDK `21` (`D:\Java\Java-21`, `JavaVersion.VERSION_21`, `options.release = 21`)
+- **Java Toolchain:** JDK `21` (`JavaVersion.VERSION_21`, `options.release = 21`)
 - **Gradle / Loom:** Gradle `8.14.3` with Fabric Loom `1.13-SNAPSHOT` (`1.13.6`)
 - **Output Artifact:** Standardized JAR naming (`archives_base_name=expandedstorage-rk`, `archivesName = "${project.archives_base_name}-fabric-${project.minecraft_version}"`), producing `build/libs/expandedstorage-rk-fabric-1.21.9-1.0.0.jar`.
+
+### Changed
+- **Vanilla Copper Chest Conflict Fix (`1.21.9+`):**
+  - Preserved internal registry ID `expandedstorage:copper_chest` across blocks, items, block entities, textures, and loot tables so worlds upgrading from `1.20.1`-`1.21.8` retain all chests and stored contents.
+  - Updated display names in `en_us.json` (`Expanded Copper Chest` / `Large Expanded Copper Chest`) and `vi_vn.json` (`Rương Đồng Mở Rộng` / `Rương Đồng Mở Rộng Lớn`) to distinguish the 36-slot tier from Vanilla's 27-slot `minecraft:copper_chest`.
+  - Updated the `expandedstorage:copper_chest` shaped recipe in `ModRecipeProvider` to `"III"`, `"ICI"`, `"IBI"` using `minecraft:chest` at center (`C`), 7 `minecraft:copper_ingot` (`I`), and 1 `minecraft:copper_block` at slot 8 (`B`, bottom-center), with unlock criteria for chest, copper ingot, and copper block.
+  - Kept the `expandedstorage:iron_chest` shaped recipe (`"III"`, `"ICI"`, `"III"`) strictly bound to `expandedstorage:copper_chest` surrounded by 8 `minecraft:iron_ingot` (Vanilla Copper Chest variants are not accepted in any recipe).
+  - Removed the hardcoded local `org.gradle.java.home` path from tracked `gradle.properties`.
 
 ### Code, BlockEntityRenderState, ContainerUser, GUI Click & Resource Migration
 - **Block & BlockEntity ContainerUser Migration (`ExpandedChestBlock`, `ExpandedChestBlockEntity`):**

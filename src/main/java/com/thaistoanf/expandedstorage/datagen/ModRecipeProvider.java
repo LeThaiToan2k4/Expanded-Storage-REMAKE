@@ -39,23 +39,26 @@ public class ModRecipeProvider extends FabricRecipeProvider {
         return new RecipeGenerator(registryLookup, exporter) {
             @Override
             public void generate() {
-                // 1. Copper Chest: vanilla chest surrounded by 8 copper ingots
+                // 1. Expanded Copper Chest: vanilla chest surrounded by 7 copper ingots and 1 copper block at slot 8 (bottom-center)
+                // Avoids conflicting with Vanilla 1.21.9+ minecraft:copper_chest (8 copper ingots + vanilla chest).
                 createShaped(RecipeCategory.DECORATIONS, ModBlocks.COPPER_CHEST)
-                        .pattern("MMM")
-                        .pattern("MCM")
-                        .pattern("MMM")
-                        .input('M', Items.COPPER_INGOT)
+                        .pattern("III")
+                        .pattern("ICI")
+                        .pattern("IBI")
+                        .input('I', Items.COPPER_INGOT)
+                        .input('B', Items.COPPER_BLOCK)
                         .input('C', Items.CHEST)
                         .criterion(hasItem(Items.CHEST), conditionsFromItem(Items.CHEST))
                         .criterion(hasItem(Items.COPPER_INGOT), conditionsFromItem(Items.COPPER_INGOT))
+                        .criterion(hasItem(Items.COPPER_BLOCK), conditionsFromItem(Items.COPPER_BLOCK))
                         .offerTo(this.exporter, recipeKey("copper_chest"));
 
-                // 2. Iron Chest: copper chest surrounded by 8 iron ingots
+                // 2. Iron Chest: expanded copper chest strictly surrounded by 8 iron ingots (never accepts vanilla copper chests)
                 createShaped(RecipeCategory.DECORATIONS, ModBlocks.IRON_CHEST)
-                        .pattern("MMM")
-                        .pattern("MCM")
-                        .pattern("MMM")
-                        .input('M', Items.IRON_INGOT)
+                        .pattern("III")
+                        .pattern("ICI")
+                        .pattern("III")
+                        .input('I', Items.IRON_INGOT)
                         .input('C', ModBlocks.COPPER_CHEST)
                         .criterion(hasItem(ModBlocks.COPPER_CHEST), conditionsFromItem(ModBlocks.COPPER_CHEST))
                         .criterion(hasItem(Items.IRON_INGOT), conditionsFromItem(Items.IRON_INGOT))

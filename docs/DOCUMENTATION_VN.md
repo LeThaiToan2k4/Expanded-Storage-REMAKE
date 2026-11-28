@@ -35,7 +35,7 @@ Mod tap trung hoan toan vao **Ruong nang cap theo cap bac** (khong co Thung Barr
 
 | Cap Ruong            | Dinh Danh (ID)                    | Ruong Don | Ruong Doi | Do Cung | Khang No | Cong Cu Khai Thac     | Khang Lua / Dung Nham |
 | :------------------- | :-------------------------------- | :-------: | :-------: | :-----: | :------: | :-------------------- | :-------------------: |
-| Ruong Dong           | `expandedstorage:copper_chest`    |    36     |    72     |   3.0   |   6.0    | Cup Da tro len        |         Khong         |
+| Ruong Dong Mo Rong   | `expandedstorage:copper_chest`    |    36     |    72     |   3.0   |   6.0    | Cup Da tro len        |         Khong         |
 | Ruong Sat            | `expandedstorage:iron_chest`      |    54     |    108    |   5.0   |   6.0    | Cup Da tro len        |         Khong         |
 | Ruong Vang           | `expandedstorage:gold_chest`      |    81     |    162    |   3.0   |   6.0    | Cup Sat tro len       |         Khong         |
 | Ruong Kim Cuong      | `expandedstorage:diamond_chest`   |    108    |    216    |   5.0   |   6.0    | Cup Sat tro len       |         Khong         |
@@ -44,11 +44,13 @@ Mod tap trung hoan toan vao **Ruong nang cap theo cap bac** (khong co Thung Barr
 
 ### Chi Tiet Cong Thuc Che Tao
 
-1. **Ruong Dong (`copper_chest`) - Ban Che Tao 3x3:**
-   - O giua: `minecraft:chest` (Ruong go Vanilla)
-   - 8 o xung quanh: `minecraft:copper_ingot` (Thoi Dong)
+1. **Ruong Dong Mo Rong (`copper_chest`) - Ban Che Tao 3x3:**
+   - Hang tren: `Thoi Dong | Thoi Dong | Thoi Dong`
+   - Hang giua: `Thoi Dong | Ruong Go Vanilla (minecraft:chest) | Thoi Dong`
+   - Hang duoi: `Thoi Dong | Khoi Dong (o so 8) | Thoi Dong`
+   - *Luu y:* Dung Ruong Go Vanilla (`minecraft:chest`), 7 `minecraft:copper_ingot` va 1 `minecraft:copper_block` tai o so 8 (giua hang duoi) de tranh trung cong thuc voi `minecraft:copper_chest` cua Vanilla (8 Thoi Dong + Ruong Go). Khong chap nhan Ruong Dong Vanilla trong bat ky cong thuc nao cua mod.
 2. **Ruong Sat (`iron_chest`) - Ban Che Tao 3x3:**
-   - O giua: `expandedstorage:copper_chest`
+   - O giua: `expandedstorage:copper_chest` (chi chap nhan Ruong Dong Mo Rong; khong chap nhan cac bien the Ruong Dong Vanilla)
    - 8 o xung quanh: `minecraft:iron_ingot` (Thoi Sat)
 3. **Ruong Vang (`gold_chest`) - Ban Che Tao 3x3:**
    - O giua: `expandedstorage:iron_chest`
@@ -80,7 +82,7 @@ Expanded Storage loai bo thanh cuon va nut mui ten cu ky, thay bang he thong cat
 
 | Cap Ruong      | Adaptive (Don) | Adaptive (Doi) | Split-Wing (Doi) | Smart Tabbed (Don) |     Smart Tabbed (Doi)     |
 | :------------- | :------------: | :------------: | :--------------: | :----------------: | :------------------------: |
-| Dong           |   `9x4` (36)   |  `12x6` (72)   |   `9x4 \| 9x4`   |   `9x4` x 1 tab    |  `9x4` x 2 tab (36 o/tab)  |
+| Dong Mo Rong   |   `9x4` (36)   |  `12x6` (72)   |   `9x4 \| 9x4`   |   `9x4` x 1 tab    |  `9x4` x 2 tab (36 o/tab)  |
 | Sat            |   `9x6` (54)   |  `12x9` (108)  |   `9x6 \| 9x6`   |   `9x6` x 1 tab    |  `9x6` x 2 tab (54 o/tab)  |
 | Vang           |   `9x9` (81)   |  `18x9` (162)  |   `9x9 \| 9x9`   |   `9x9` x 1 tab    |  `9x9` x 2 tab (81 o/tab)  |
 | Kim Cuong      |  `12x9` (108)  |  `24x9` (216)  |  `12x9 \| 12x9`  |   `9x6` x 2 tab    | `12x9` x 2 tab (108 o/tab) |

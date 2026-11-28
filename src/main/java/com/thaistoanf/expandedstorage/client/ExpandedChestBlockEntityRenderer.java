@@ -8,8 +8,6 @@ import it.unimi.dsi.fastutil.floats.Float2FloatFunction;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.AbstractChestBlock;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.DoubleBlockProperties;
@@ -82,11 +80,9 @@ public class ExpandedChestBlockEntityRenderer
                 : ChestType.SINGLE;
         state.yaw = blockState.get(ChestBlock.FACING).getPositiveHorizontalDegrees();
 
-        @SuppressWarnings("unchecked")
-        DoubleBlockProperties.PropertySource<? extends ChestBlockEntity> source = (inWorld
-                && blockState.getBlock() instanceof AbstractChestBlock<?> abstractChest)
-                        ? ((AbstractChestBlock<ChestBlockEntity>) abstractChest).getBlockEntitySource(blockState, world,
-                                entity.getPos(), true)
+        DoubleBlockProperties.PropertySource<? extends ChestBlockEntity> source = (world != null
+                && blockState.getBlock() instanceof ChestBlock chestBlock)
+                        ? chestBlock.getBlockEntitySource(blockState, world, entity.getPos(), true)
                         : DoubleBlockProperties.PropertyRetriever::getFallback;
 
         Float2FloatFunction progressFn = source.apply(ChestBlock.getAnimationProgressRetriever(entity));

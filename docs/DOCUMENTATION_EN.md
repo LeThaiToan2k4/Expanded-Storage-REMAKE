@@ -35,7 +35,7 @@ Expanded Storage intentionally focuses on **tiered chests only** (no barrels, tr
 
 | Tier | Identifier | Single | Double | Hardness | Blast Resistance | Tool Requirement | Fireproof Item |
 | :--- | :--- | :---: | :---: | :---: | :---: | :--- | :---: |
-| Copper | `expandedstorage:copper_chest` | 36 | 72 | 3.0 | 6.0 | Stone Pickaxe+ | No |
+| Expanded Copper | `expandedstorage:copper_chest` | 36 | 72 | 3.0 | 6.0 | Stone Pickaxe+ | No |
 | Iron | `expandedstorage:iron_chest` | 54 | 108 | 5.0 | 6.0 | Stone Pickaxe+ | No |
 | Gold | `expandedstorage:gold_chest` | 81 | 162 | 3.0 | 6.0 | Iron Pickaxe+ | No |
 | Diamond | `expandedstorage:diamond_chest` | 108 | 216 | 5.0 | 6.0 | Iron Pickaxe+ | No |
@@ -44,11 +44,13 @@ Expanded Storage intentionally focuses on **tiered chests only** (no barrels, tr
 
 ### Exact Recipe Layouts
 
-1. **Copper Chest (`copper_chest`) - Shaped Crafting:**
-   - Center: `minecraft:chest`
-   - Outer 8 slots: `minecraft:copper_ingot`
+1. **Expanded Copper Chest (`copper_chest`) - Shaped Crafting:**
+   - Top row: `Copper Ingot | Copper Ingot | Copper Ingot`
+   - Middle row: `Copper Ingot | Vanilla Chest (minecraft:chest) | Copper Ingot`
+   - Bottom row: `Copper Ingot | Copper Block (slot 8) | Copper Ingot`
+   - *Note:* Uses a Vanilla Wooden Chest (`minecraft:chest`) with 7 `minecraft:copper_ingot` and 1 `minecraft:copper_block` at slot 8 (bottom-center) so the recipe never conflicts with Vanilla's `minecraft:copper_chest` (8 Copper Ingots + Chest). Vanilla Copper Chests are never accepted in any mod recipe.
 2. **Iron Chest (`iron_chest`) - Shaped Crafting:**
-   - Center: `expandedstorage:copper_chest`
+   - Center: `expandedstorage:copper_chest` (Expanded Copper Chest strictly; Vanilla Copper Chest variants are not accepted)
    - Outer 8 slots: `minecraft:iron_ingot`
 3. **Gold Chest (`gold_chest`) - Shaped Crafting:**
    - Center: `expandedstorage:iron_chest`
@@ -80,7 +82,7 @@ Expanded Storage replaces laggy scrollbars with a dynamic 9-slice T-shape render
 
 | Tier | Adaptive (Single) | Adaptive (Double) | Split-Wing (Double) | Smart Tabbed (Single) | Smart Tabbed (Double) |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| Copper | `9x4` (36) | `12x6` (72) | `9x4 \| 9x4` | `9x4` x 1 tab | `9x4` x 2 tabs (36/tab) |
+| Expanded Copper | `9x4` (36) | `12x6` (72) | `9x4 \| 9x4` | `9x4` x 1 tab | `9x4` x 2 tabs (36/tab) |
 | Iron | `9x6` (54) | `12x9` (108) | `9x6 \| 9x6` | `9x6` x 1 tab | `9x6` x 2 tabs (54/tab) |
 | Gold | `9x9` (81) | `18x9` (162) | `9x9 \| 9x9` | `9x9` x 1 tab | `9x9` x 2 tabs (81/tab) |
 | Diamond | `12x9` (108) | `24x9` (216) | `12x9 \| 12x9` | `9x6` x 2 tabs | `12x9` x 2 tabs (108/tab) |

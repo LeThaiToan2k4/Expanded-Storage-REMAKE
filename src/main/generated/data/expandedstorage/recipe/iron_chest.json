@@ -3,12 +3,12 @@
   "category": "misc",
   "key": {
     "C": "expandedstorage:copper_chest",
-    "M": "minecraft:iron_ingot"
+    "I": "minecraft:iron_ingot"
   },
   "pattern": [
-    "MMM",
-    "MCM",
-    "MMM"
+    "III",
+    "ICI",
+    "III"
   ],
   "result": {
     "count": 1,
