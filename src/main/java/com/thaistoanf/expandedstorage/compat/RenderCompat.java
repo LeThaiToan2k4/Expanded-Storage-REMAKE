@@ -10,6 +10,7 @@ import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.TexturedRenderLayers;
 import net.minecraft.client.render.block.entity.model.ChestBlockModel;
 import net.minecraft.client.render.command.ModelCommandRenderer;
@@ -218,7 +219,7 @@ public final class RenderCompat {
     }
 
     public static RenderLayer getChestRenderLayer(SpriteIdentifier sprite) {
-        return sprite.getRenderLayer(RenderLayer::getEntityCutout);
+        return sprite.getRenderLayer(RenderLayers::entityCutout);
     }
 
     public static void submitChestModel(

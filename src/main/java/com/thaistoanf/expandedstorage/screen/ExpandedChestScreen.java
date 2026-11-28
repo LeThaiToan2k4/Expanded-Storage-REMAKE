@@ -277,7 +277,7 @@ public class ExpandedChestScreen extends HandledScreen<ExpandedChestScreenHandle
 
     private static void playClickSound() {
         MinecraftClient.getInstance().getSoundManager().play(
-                PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0f)
+                PositionedSoundInstance.ui(SoundEvents.UI_BUTTON_CLICK, 1.0f)
         );
     }
 }
