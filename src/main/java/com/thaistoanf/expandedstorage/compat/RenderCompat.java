@@ -1,54 +1,38 @@
 package com.thaistoanf.expandedstorage.compat;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.thaistoanf.expandedstorage.core.ChestTier;
 import com.thaistoanf.expandedstorage.core.LayoutCalculator;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.enums.ChestType;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.RenderLayers;
-import net.minecraft.client.render.TexturedRenderLayers;
-import net.minecraft.client.render.block.entity.model.ChestBlockModel;
-import net.minecraft.client.render.command.ModelCommandRenderer;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteHolder;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.model.object.chest.ChestModel;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.sprite.SpriteGetter;
+import net.minecraft.client.resources.model.sprite.SpriteId;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.block.state.properties.ChestType;
 
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Client-side rendering adapter isolating {@link DrawContext} texture calls, 9-slice T-shape stitching,
- * and chest sprite atlas resolution so 1.21.2+ GUI/RenderLayer changes stay in one file.
+ * Client-side rendering adapter isolating {@link GuiGraphicsExtractor} texture calls, 9-slice T-shape stitching,
+ * and chest sprite atlas resolution in Minecraft 26.1+.
  */
 @Environment(EnvType.CLIENT)
 public final class RenderCompat {
     public static final int TEX_SIZE = 128;
-
-    // Sprite sheet layout (128x128) shared identically by gui_light.png and gui_dark.png:
-    // [0,  0,  24, 24] -> Main 9-slice container panel (4px border, 16x16 center)
-    // [24, 0,  18, 18] -> Standard recessed 18x18 item slot
-    // [42, 0,  24, 20] -> Inactive top tab (9-slice, 4px border)
-    // [66, 0,  24, 20] -> Active top tab (open bottom, 4px left/top/right border)
-    // [0,  24, 12, 12] -> Button normal
-    // [12, 24, 12, 12] -> Button hovered
-    // [24, 24,  4,  4] -> T-seam left inner-corner joint
-    // [28, 24,  4,  4] -> T-seam right inner-corner joint
-    // [32, 24,  2, 16] -> Split-wing vertical divider groove
-    // [0,  36, 12, 12] -> Icon: Adaptive mode
-    // [12, 36, 12, 12] -> Icon: Split-Wing mode
-    // [24, 36, 12, 12] -> Icon: Smart Tabbed mode
-    // [36, 36, 12, 12] -> Icon: Sun (switch to Light)
-    // [48, 36, 12, 12] -> Icon: Moon (switch to Dark)
 
     public static final Identifier GUI_LIGHT = IdCompat.id("textures/gui/gui_light.png");
     public static final Identifier GUI_DARK = IdCompat.id("textures/gui/gui_dark.png");
@@ -59,9 +43,9 @@ public final class RenderCompat {
         for (ChestTier tier : ChestTier.values()) {
             String base = "entity/chest/" + tier.id() + "/";
             CHEST_SPRITES.put(tier, new TierSprites(
-                    new SpriteIdentifier(TexturedRenderLayers.CHEST_ATLAS_TEXTURE, IdCompat.id(base + "normal")),
-                    new SpriteIdentifier(TexturedRenderLayers.CHEST_ATLAS_TEXTURE, IdCompat.id(base + "left")),
-                    new SpriteIdentifier(TexturedRenderLayers.CHEST_ATLAS_TEXTURE, IdCompat.id(base + "right"))
+                    new SpriteId(Sheets.CHEST_SHEET, IdCompat.id(base + "normal")),
+                    new SpriteId(Sheets.CHEST_SHEET, IdCompat.id(base + "left")),
+                    new SpriteId(Sheets.CHEST_SHEET, IdCompat.id(base + "right"))
             ));
         }
     }
@@ -69,7 +53,7 @@ public final class RenderCompat {
     private RenderCompat() {
     }
 
-    private record TierSprites(SpriteIdentifier single, SpriteIdentifier left, SpriteIdentifier right) {
+    private record TierSprites(SpriteId single, SpriteId left, SpriteId right) {
     }
 
     public static Identifier guiTexture(boolean dark) {
@@ -87,12 +71,12 @@ public final class RenderCompat {
         return active ? 0xFF2B2B2B : 0xFF585858;
     }
 
-    public static void drawRegion(DrawContext ctx, Identifier tex, int x, int y, int u, int v, int width, int height) {
-        ctx.drawTexture(RenderPipelines.GUI_TEXTURED, tex, x, y, (float) u, (float) v, width, height, TEX_SIZE, TEX_SIZE);
+    public static void drawRegion(GuiGraphicsExtractor ctx, Identifier tex, int x, int y, int u, int v, int width, int height) {
+        ctx.blit(RenderPipelines.GUI_TEXTURED, tex, x, y, (float) u, (float) v, width, height, TEX_SIZE, TEX_SIZE);
     }
 
     private static void drawTiledRegion(
-            DrawContext ctx, Identifier tex,
+            GuiGraphicsExtractor ctx, Identifier tex,
             int x, int y, int width, int height,
             int u, int v, int tileW, int tileH
     ) {
@@ -110,7 +94,7 @@ public final class RenderCompat {
 
     /** Draws a pixel-accurate 9-slice box from a source region of size {@code (srcW, srcH)} with border {@code b}. */
     public static void drawNineSlice(
-            DrawContext ctx, Identifier tex,
+            GuiGraphicsExtractor ctx, Identifier tex,
             int x, int y, int width, int height,
             int srcU, int srcV, int srcW, int srcH, int b
     ) {
@@ -142,7 +126,7 @@ public final class RenderCompat {
      * with no double border along the shared seam.
      */
     public static void drawTShapePanels(
-            DrawContext ctx, Identifier tex,
+            GuiGraphicsExtractor ctx, Identifier tex,
             int originX, int originY,
             LayoutCalculator.Rect chest,
             LayoutCalculator.Rect player
@@ -172,7 +156,7 @@ public final class RenderCompat {
     }
 
     public static void drawTab(
-            DrawContext ctx, Identifier tex,
+            GuiGraphicsExtractor ctx, Identifier tex,
             int x, int y, int width, int height,
             boolean active
     ) {
@@ -185,7 +169,7 @@ public final class RenderCompat {
         }
     }
 
-    public static void drawSlotFrames(DrawContext ctx, Identifier tex, int originX, int originY, List<LayoutCalculator.SlotPos> slots) {
+    public static void drawSlotFrames(GuiGraphicsExtractor ctx, Identifier tex, int originX, int originY, List<LayoutCalculator.SlotPos> slots) {
         for (LayoutCalculator.SlotPos pos : slots) {
             if (pos.visible()) {
                 drawRegion(ctx, tex, originX + pos.x() - 1, originY + pos.y() - 1, 24, 0, 18, 18);
@@ -193,23 +177,23 @@ public final class RenderCompat {
         }
     }
 
-    public static void drawSplitDivider(DrawContext ctx, Identifier tex, int x, int topY, int height) {
+    public static void drawSplitDivider(GuiGraphicsExtractor ctx, Identifier tex, int x, int topY, int height) {
         drawTiledRegion(ctx, tex, x - 1, topY, 2, height, 32, 24, 2, 16);
     }
 
     public static void drawIconButton(
-            DrawContext ctx, Identifier tex,
+            GuiGraphicsExtractor ctx, Identifier tex,
             int x, int y, boolean hovered, int iconU, int iconV
     ) {
         drawRegion(ctx, tex, x, y, hovered ? 12 : 0, 24, 12, 12);
         drawRegion(ctx, tex, x, y, iconU, iconV, 12, 12);
     }
 
-    public static void drawLabel(DrawContext ctx, TextRenderer font, Text text, int x, int y, int color, boolean shadow) {
-        ctx.drawText(font, text, x, y, color, shadow);
+    public static void drawLabel(GuiGraphicsExtractor ctx, Font font, Component text, int x, int y, int color, boolean shadow) {
+        ctx.text(font, text, x, y, color, shadow);
     }
 
-    public static SpriteIdentifier getChestSprite(ChestTier tier, ChestType chestType) {
+    public static SpriteId getChestSprite(ChestTier tier, ChestType chestType) {
         TierSprites sprites = CHEST_SPRITES.getOrDefault(tier, CHEST_SPRITES.get(ChestTier.COPPER));
         return switch (chestType) {
             case LEFT -> sprites.left();
@@ -218,29 +202,29 @@ public final class RenderCompat {
         };
     }
 
-    public static RenderLayer getChestRenderLayer(SpriteIdentifier sprite) {
-        return sprite.getRenderLayer(RenderLayers::entityCutout);
+    public static RenderType getChestRenderLayer(SpriteId sprite) {
+        return sprite.renderType(RenderTypes::entityCutout);
     }
 
     public static void submitChestModel(
-            OrderedRenderCommandQueue queue,
-            ChestBlockModel model,
+            SubmitNodeCollector queue,
+            ChestModel model,
             float openFactor,
-            MatrixStack matrices,
-            SpriteHolder materials,
-            SpriteIdentifier spriteId,
+            PoseStack matrices,
+            SpriteGetter materials,
+            SpriteId spriteId,
             int light,
-            ModelCommandRenderer.CrumblingOverlayCommand crumblingOverlay
+            ModelFeatureRenderer.CrumblingOverlay crumblingOverlay
     ) {
-        RenderLayer layer = getChestRenderLayer(spriteId);
-        Sprite sprite = materials.getSprite(spriteId);
+        RenderType layer = getChestRenderLayer(spriteId);
+        TextureAtlasSprite sprite = materials.get(spriteId);
         queue.submitModel(
                 model,
                 openFactor,
                 matrices,
                 layer,
                 light,
-                OverlayTexture.DEFAULT_UV,
+                OverlayTexture.NO_OVERLAY,
                 -1,
                 sprite,
                 0,

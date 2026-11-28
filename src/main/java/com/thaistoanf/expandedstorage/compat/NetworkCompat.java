@@ -1,79 +1,79 @@
 package com.thaistoanf.expandedstorage.compat;
 
 import com.thaistoanf.expandedstorage.core.ChestTier;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.screen.NamedScreenHandlerFactory;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
 
 /**
- * Isolates {@link ExtendedScreenHandlerFactory} and opening payload serialization
- * using {@code ExtendedScreenHandlerType<T, D>} + {@link PacketCodec} in 1.20.5+.
+ * Isolates {@link ExtendedMenuProvider} and opening payload serialization
+ * using {@code ExtendedMenuType<T, D>} + {@link StreamCodec} in 26.1+.
  */
 public final class NetworkCompat {
     private NetworkCompat() {
     }
 
-    /** Lightweight opening metadata sent once when opening a chest; slots sync via vanilla ScreenHandler. */
+    /** Lightweight opening metadata sent once when opening a chest; slots sync via vanilla AbstractContainerMenu. */
     public record ChestOpenData(ChestTier tier, boolean doubleChest) {
-        public static final PacketCodec<RegistryByteBuf, ChestOpenData> PACKET_CODEC = PacketCodec.of(
-                (value, buf) -> writeOpenData(buf, value),
+        public static final StreamCodec<RegistryFriendlyByteBuf, ChestOpenData> STREAM_CODEC = StreamCodec.of(
+                NetworkCompat::writeOpenData,
                 NetworkCompat::readOpenData
         );
     }
 
     @FunctionalInterface
-    public interface ClientHandlerFactory<T extends ScreenHandler> {
-        T create(int syncId, PlayerInventory playerInventory, ChestOpenData data);
+    public interface ClientHandlerFactory<T extends AbstractContainerMenu> {
+        T create(int syncId, Inventory playerInventory, ChestOpenData data);
     }
 
     @FunctionalInterface
     public interface ServerMenuCreator {
-        ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player);
+        AbstractContainerMenu createMenu(int syncId, Inventory playerInventory, Player player);
     }
 
-    public static <T extends ScreenHandler> ScreenHandlerType<T> createScreenHandlerType(ClientHandlerFactory<T> factory) {
-        return new ExtendedScreenHandlerType<>(factory::create, ChestOpenData.PACKET_CODEC);
+    public static <T extends AbstractContainerMenu> MenuType<T> createScreenHandlerType(ClientHandlerFactory<T> factory) {
+        return new ExtendedMenuType<>(factory::create, ChestOpenData.STREAM_CODEC);
     }
 
-    public static NamedScreenHandlerFactory createExtendedFactory(
+    public static MenuProvider createExtendedFactory(
             ChestTier tier,
             boolean doubleChest,
-            Text displayName,
+            Component displayName,
             ServerMenuCreator creator
     ) {
-        return new ExtendedScreenHandlerFactory<ChestOpenData>() {
+        return new ExtendedMenuProvider<ChestOpenData>() {
             @Override
-            public ChestOpenData getScreenOpeningData(ServerPlayerEntity player) {
+            public ChestOpenData getScreenOpeningData(ServerPlayer player) {
                 return new ChestOpenData(tier, doubleChest);
             }
 
             @Override
-            public Text getDisplayName() {
+            public Component getDisplayName() {
                 return displayName;
             }
 
             @Override
-            public ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
+            public AbstractContainerMenu createMenu(int syncId, Inventory playerInventory, Player player) {
                 return creator.createMenu(syncId, playerInventory, player);
             }
         };
     }
 
-    public static void writeOpenData(PacketByteBuf buf, ChestOpenData data) {
+    public static void writeOpenData(FriendlyByteBuf buf, ChestOpenData data) {
         buf.writeVarInt(data.tier().ordinal());
         buf.writeBoolean(data.doubleChest());
     }
 
-    public static ChestOpenData readOpenData(PacketByteBuf buf) {
+    public static ChestOpenData readOpenData(FriendlyByteBuf buf) {
         ChestTier tier = ChestTier.byIndex(buf.readVarInt());
         boolean doubleChest = buf.readBoolean();
         return new ChestOpenData(tier, doubleChest);

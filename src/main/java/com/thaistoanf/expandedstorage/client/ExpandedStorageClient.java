@@ -8,8 +8,8 @@ import com.thaistoanf.expandedstorage.screen.ExpandedChestScreen;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.screen.ingame.HandledScreens;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 
 /** Client entrypoint registering the container screen and block entity renderers (3D item rendering uses 1.21.4+ special item models). */
 @Environment(EnvType.CLIENT)
@@ -17,10 +17,10 @@ public class ExpandedStorageClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         ClientConfig.get();
-        HandledScreens.register(ModScreenHandlers.EXPANDED_CHEST, ExpandedChestScreen::new);
+        MenuScreens.register(ModScreenHandlers.EXPANDED_CHEST, ExpandedChestScreen::new);
 
         for (ChestTier tier : ChestTier.values()) {
-            BlockEntityRendererFactories.register(ModBlockEntities.get(tier), ExpandedChestBlockEntityRenderer::new);
+            BlockEntityRenderers.register(ModBlockEntities.get(tier), ExpandedChestBlockEntityRenderer::new);
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.thaistoanf.expandedstorage.client;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.thaistoanf.expandedstorage.block.entity.ExpandedChestBlockEntity;
 import com.thaistoanf.expandedstorage.compat.RenderCompat;
 import com.thaistoanf.expandedstorage.core.ChestTier;
@@ -8,51 +9,48 @@ import it.unimi.dsi.fastutil.floats.Float2FloatFunction;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ChestBlock;
-import net.minecraft.block.DoubleBlockProperties;
-import net.minecraft.block.entity.ChestBlockEntity;
-import net.minecraft.block.enums.ChestType;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-import net.minecraft.client.render.block.entity.LightmapCoordinatesRetriever;
-import net.minecraft.client.render.block.entity.model.ChestBlockModel;
-import net.minecraft.client.render.block.entity.state.ChestBlockEntityRenderState;
-import net.minecraft.client.render.command.ModelCommandRenderer;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.model.EntityModelLayers;
-import net.minecraft.client.render.state.CameraRenderState;
-import net.minecraft.client.texture.SpriteHolder;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.RotationAxis;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.model.object.chest.ChestModel;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.BrightnessCombiner;
+import net.minecraft.client.renderer.blockentity.ChestRenderer;
+import net.minecraft.client.renderer.blockentity.state.ChestRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.resources.model.sprite.SpriteGetter;
+import net.minecraft.client.resources.model.sprite.SpriteId;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.ChestBlock;
+import net.minecraft.world.level.block.DoubleBlockCombiner;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.ChestType;
+import net.minecraft.world.phys.Vec3;
 
 /**
- * Renders single and double tiered chests in Minecraft 1.21.9+ using
- * {@link ChestBlockModel},
- * {@link OrderedRenderCommandQueue}, and sprites batched inside
- * {@code minecraft:textures/atlas/chest.png}.
+ * Renders single and double tiered chests in Minecraft 26.1+ using {@link ChestModel},
+ * {@link SubmitNodeCollector}, and sprites batched inside {@code minecraft:textures/atlas/chest.png}.
  */
 @Environment(EnvType.CLIENT)
 public class ExpandedChestBlockEntityRenderer
         implements BlockEntityRenderer<ExpandedChestBlockEntity, ExpandedChestBlockEntityRenderer.RenderState> {
-    private final SpriteHolder materials;
-    private final ChestBlockModel singleChest;
-    private final ChestBlockModel doubleChestLeft;
-    private final ChestBlockModel doubleChestRight;
+    private final SpriteGetter materials;
+    private final ChestModel singleChest;
+    private final ChestModel doubleChestLeft;
+    private final ChestModel doubleChestRight;
 
-    public static class RenderState extends ChestBlockEntityRenderState {
+    public static class RenderState extends ChestRenderState {
         public ChestTier tier = ChestTier.COPPER;
     }
 
-    public ExpandedChestBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {
-        this.materials = ctx.spriteHolder();
-        this.singleChest = new ChestBlockModel(ctx.getLayerModelPart(EntityModelLayers.CHEST));
-        this.doubleChestLeft = new ChestBlockModel(ctx.getLayerModelPart(EntityModelLayers.DOUBLE_CHEST_LEFT));
-        this.doubleChestRight = new ChestBlockModel(ctx.getLayerModelPart(EntityModelLayers.DOUBLE_CHEST_RIGHT));
+    public ExpandedChestBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
+        this.materials = ctx.sprites();
+        this.singleChest = new ChestModel(ctx.bakeLayer(ModelLayers.CHEST));
+        this.doubleChestLeft = new ChestModel(ctx.bakeLayer(ModelLayers.DOUBLE_CHEST_LEFT));
+        this.doubleChestRight = new ChestModel(ctx.bakeLayer(ModelLayers.DOUBLE_CHEST_RIGHT));
     }
 
     @Override
@@ -61,55 +59,54 @@ public class ExpandedChestBlockEntityRenderer
     }
 
     @Override
-    public void updateRenderState(
+    public void extractRenderState(
             ExpandedChestBlockEntity entity,
             RenderState state,
             float tickProgress,
-            Vec3d cameraPos,
-            ModelCommandRenderer.CrumblingOverlayCommand crumblingOverlay) {
-        BlockEntityRenderer.super.updateRenderState(entity, state, tickProgress, cameraPos, crumblingOverlay);
+            Vec3 cameraPos,
+            ModelFeatureRenderer.CrumblingOverlay crumblingOverlay
+    ) {
+        BlockEntityRenderer.super.extractRenderState(entity, state, tickProgress, cameraPos, crumblingOverlay);
         state.tier = entity.getTier();
 
-        World world = entity.getWorld();
+        Level world = entity.getLevel();
         boolean inWorld = world != null;
         BlockState blockState = inWorld
-                ? entity.getCachedState()
-                : ModBlocks.get(entity.getTier()).getDefaultState().with(ChestBlock.FACING, Direction.SOUTH);
+                ? entity.getBlockState()
+                : ModBlocks.get(entity.getTier()).defaultBlockState().setValue(ChestBlock.FACING, Direction.SOUTH);
 
-        state.chestType = blockState.contains(ChestBlock.CHEST_TYPE) ? blockState.get(ChestBlock.CHEST_TYPE)
-                : ChestType.SINGLE;
-        state.yaw = blockState.get(ChestBlock.FACING).getPositiveHorizontalDegrees();
+        state.type = blockState.hasProperty(ChestBlock.TYPE) ? blockState.getValue(ChestBlock.TYPE) : ChestType.SINGLE;
+        state.facing = blockState.getValue(ChestBlock.FACING);
 
-        DoubleBlockProperties.PropertySource<? extends ChestBlockEntity> source = (world != null
+        DoubleBlockCombiner.NeighborCombineResult<? extends ChestBlockEntity> source = (world != null
                 && blockState.getBlock() instanceof ChestBlock chestBlock)
-                        ? chestBlock.getBlockEntitySource(blockState, world, entity.getPos(), true)
-                        : DoubleBlockProperties.PropertyRetriever::getFallback;
+                        ? chestBlock.combine(blockState, world, entity.getBlockPos(), true)
+                        : DoubleBlockCombiner.Combiner::acceptNone;
 
-        Float2FloatFunction progressFn = source.apply(ChestBlock.getAnimationProgressRetriever(entity));
-        state.lidAnimationProgress = progressFn.get(tickProgress);
+        Float2FloatFunction progressFn = source.apply(ChestBlock.opennessCombiner(entity));
+        state.open = progressFn.get(tickProgress);
 
-        if (state.chestType != ChestType.SINGLE) {
-            Int2IntFunction lightFn = source.apply(new LightmapCoordinatesRetriever<>());
-            state.lightmapCoordinates = lightFn.applyAsInt(state.lightmapCoordinates);
+        if (state.type != ChestType.SINGLE) {
+            Int2IntFunction lightFn = source.apply(new BrightnessCombiner<>());
+            state.lightCoords = lightFn.applyAsInt(state.lightCoords);
         }
     }
 
     @Override
-    public void render(
+    public void submit(
             RenderState state,
-            MatrixStack matrices,
-            OrderedRenderCommandQueue queue,
-            CameraRenderState cameraState) {
-        matrices.push();
-        matrices.translate(0.5f, 0.5f, 0.5f);
-        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-state.yaw));
-        matrices.translate(-0.5f, -0.5f, -0.5f);
+            PoseStack matrices,
+            SubmitNodeCollector queue,
+            CameraRenderState cameraState
+    ) {
+        matrices.pushPose();
+        matrices.mulPose(ChestRenderer.modelTransformation(state.facing));
 
-        float openFactor = 1.0f - state.lidAnimationProgress;
+        float openFactor = 1.0f - state.open;
         openFactor = 1.0f - openFactor * openFactor * openFactor;
 
-        SpriteIdentifier spriteId = RenderCompat.getChestSprite(state.tier, state.chestType);
-        ChestBlockModel model = switch (state.chestType) {
+        SpriteId spriteId = RenderCompat.getChestSprite(state.tier, state.type);
+        ChestModel model = switch (state.type) {
             case LEFT -> this.doubleChestLeft;
             case RIGHT -> this.doubleChestRight;
             default -> this.singleChest;
@@ -122,9 +119,10 @@ public class ExpandedChestBlockEntityRenderer
                 matrices,
                 this.materials,
                 spriteId,
-                state.lightmapCoordinates,
-                state.crumblingOverlay);
+                state.lightCoords,
+                state.breakProgress
+        );
 
-        matrices.pop();
+        matrices.popPose();
     }
 }

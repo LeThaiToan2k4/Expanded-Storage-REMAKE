@@ -3,25 +3,26 @@ package com.thaistoanf.expandedstorage.datagen;
 import com.thaistoanf.expandedstorage.block.ExpandedChestBlock;
 import com.thaistoanf.expandedstorage.core.ChestTier;
 import com.thaistoanf.expandedstorage.registry.ModBlocks;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.tag.BlockTags;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.tags.BlockTags;
 
 import java.util.concurrent.CompletableFuture;
 
-/** Generates pickaxe mining tags, tool-tier tags, and piglin-guarded block tags. */
-public class ModBlockTagProvider extends FabricTagProvider.BlockTagProvider {
+/**
+ * Generates pickaxe mining tags, tool-tier tags, and piglin-guarded block tags.
+ */
+public class ModBlockTagProvider extends FabricTagsProvider.BlockTagsProvider {
     public ModBlockTagProvider(
-            FabricDataOutput output,
-            CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture
-    ) {
+            FabricPackOutput output,
+            CompletableFuture<HolderLookup.Provider> registriesFuture) {
         super(output, registriesFuture);
     }
 
     @Override
-    protected void configure(RegistryWrapper.WrapperLookup arg) {
-        var pickaxe = valueLookupBuilder(BlockTags.PICKAXE_MINEABLE);
+    protected void addTags(HolderLookup.Provider arg) {
+        var pickaxe = valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE);
         var stone = valueLookupBuilder(BlockTags.NEEDS_STONE_TOOL);
         var iron = valueLookupBuilder(BlockTags.NEEDS_IRON_TOOL);
         var diamond = valueLookupBuilder(BlockTags.NEEDS_DIAMOND_TOOL);

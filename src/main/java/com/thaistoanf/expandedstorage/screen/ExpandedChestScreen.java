@@ -6,16 +6,16 @@ import com.thaistoanf.expandedstorage.core.GuiMode;
 import com.thaistoanf.expandedstorage.core.LayoutCalculator;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.sound.PositionedSoundInstance;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.player.Inventory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,18 +25,18 @@ import java.util.List;
  * automatic small-screen fallback, click-through flanks, and instant Light/Dark theme switching.
  */
 @Environment(EnvType.CLIENT)
-public class ExpandedChestScreen extends HandledScreen<ExpandedChestScreenHandler> {
+public class ExpandedChestScreen extends AbstractContainerScreen<ExpandedChestScreenHandler> {
     private LayoutCalculator.Layout layout;
     private int activeTab = 0;
     private boolean suppressNextRelease = false;
 
-    public ExpandedChestScreen(ExpandedChestScreenHandler handler, PlayerInventory inventory, Text title) {
+    public ExpandedChestScreen(ExpandedChestScreenHandler handler, Inventory inventory, Component title) {
         super(handler, inventory, title);
         this.layout = LayoutCalculator.compute(
                 handler.getTier(), handler.isDoubleChest(), ClientConfig.get().guiMode(), 0, 0, 0
         );
-        this.backgroundWidth = this.layout.totalWidth();
-        this.backgroundHeight = this.layout.totalHeight();
+        this.imageWidth = this.layout.totalWidth();
+        this.imageHeight = this.layout.totalHeight();
     }
 
     @Override
@@ -46,38 +46,38 @@ public class ExpandedChestScreen extends HandledScreen<ExpandedChestScreenHandle
 
     private void recomputeLayout() {
         this.layout = LayoutCalculator.compute(
-                this.handler.getTier(),
-                this.handler.isDoubleChest(),
+                this.menu.getTier(),
+                this.menu.isDoubleChest(),
                 ClientConfig.get().guiMode(),
                 this.activeTab,
                 this.width,
                 this.height
         );
         this.activeTab = this.layout.activeTab();
-        this.backgroundWidth = this.layout.totalWidth();
-        this.backgroundHeight = this.layout.totalHeight();
-        this.x = (this.width - this.backgroundWidth) / 2;
-        this.y = (this.height - this.backgroundHeight) / 2;
-        this.titleX = this.layout.titleX();
-        this.titleY = this.layout.titleY();
-        this.playerInventoryTitleX = this.layout.playerTitleX();
-        this.playerInventoryTitleY = this.layout.playerTitleY();
-        this.handler.applyLayout(this.layout);
+        this.imageWidth = this.layout.totalWidth();
+        this.imageHeight = this.layout.totalHeight();
+        this.leftPos = (this.width - this.imageWidth) / 2;
+        this.topPos = (this.height - this.imageHeight) / 2;
+        this.titleLabelX = this.layout.titleX();
+        this.titleLabelY = this.layout.titleY();
+        this.inventoryLabelX = this.layout.playerTitleX();
+        this.inventoryLabelY = this.layout.playerTitleY();
+        this.menu.applyLayout(this.layout);
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        super.render(context, mouseX, mouseY, delta);
-        this.drawMouseoverTooltip(context, mouseX, mouseY);
+    public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
+        super.extractRenderState(context, mouseX, mouseY, delta);
         this.drawControlTooltips(context, mouseX, mouseY);
     }
 
     @Override
-    protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY) {
+    public void extractBackground(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
+        super.extractBackground(context, mouseX, mouseY, delta);
         boolean dark = ClientConfig.get().darkGui();
         Identifier tex = RenderCompat.guiTexture(dark);
-        double relX = mouseX - this.x;
-        double relY = mouseY - this.y;
+        double relX = mouseX - this.leftPos;
+        double relY = mouseY - this.topPos;
 
         // 1. Inactive Smart Tabs behind top chest edge
         if (this.layout.effectiveMode() == GuiMode.SMART_TABBED) {
@@ -89,7 +89,7 @@ public class ExpandedChestScreen extends HandledScreen<ExpandedChestScreenHandle
         }
 
         // 2. Seamless T-shape chest + player inventory panels
-        RenderCompat.drawTShapePanels(context, tex, this.x, this.y, this.layout.chestPanel(), this.layout.playerPanel());
+        RenderCompat.drawTShapePanels(context, tex, this.leftPos, this.topPos, this.layout.chestPanel(), this.layout.playerPanel());
 
         // 3. Active Smart Tab merged seamlessly onto the top chest edge
         if (this.layout.effectiveMode() == GuiMode.SMART_TABBED) {
@@ -102,14 +102,14 @@ public class ExpandedChestScreen extends HandledScreen<ExpandedChestScreenHandle
 
         // 4. Split-Wing center vertical divider groove
         if (this.layout.splitWings() && this.layout.dividerX() >= 0) {
-            int divTop = this.y + this.layout.chestPanel().y() + LayoutCalculator.HEADER_HEIGHT;
+            int divTop = this.topPos + this.layout.chestPanel().y() + LayoutCalculator.HEADER_HEIGHT;
             int divHeight = this.layout.rows() * LayoutCalculator.SLOT_SIZE;
-            RenderCompat.drawSplitDivider(context, tex, this.x + this.layout.dividerX(), divTop, divHeight);
+            RenderCompat.drawSplitDivider(context, tex, this.leftPos + this.layout.dividerX(), divTop, divHeight);
         }
 
         // 5. Crisp recessed 18x18 slot frames
-        RenderCompat.drawSlotFrames(context, tex, this.x, this.y, this.layout.chestSlots());
-        RenderCompat.drawSlotFrames(context, tex, this.x, this.y, this.layout.playerSlots());
+        RenderCompat.drawSlotFrames(context, tex, this.leftPos, this.topPos, this.layout.chestSlots());
+        RenderCompat.drawSlotFrames(context, tex, this.leftPos, this.topPos, this.layout.playerSlots());
 
         // 6. Header mode & dark/light icon buttons
         LayoutCalculator.Rect modeRect = this.layout.modeButton();
@@ -120,7 +120,7 @@ public class ExpandedChestScreen extends HandledScreen<ExpandedChestScreenHandle
         };
         RenderCompat.drawIconButton(
                 context, tex,
-                this.x + modeRect.x(), this.y + modeRect.y(),
+                this.leftPos + modeRect.x(), this.topPos + modeRect.y(),
                 modeRect.contains(relX, relY),
                 modeIconU, 36
         );
@@ -129,93 +129,93 @@ public class ExpandedChestScreen extends HandledScreen<ExpandedChestScreenHandle
         int themeIconU = dark ? 36 : 48;
         RenderCompat.drawIconButton(
                 context, tex,
-                this.x + themeRect.x(), this.y + themeRect.y(),
+                this.leftPos + themeRect.x(), this.topPos + themeRect.y(),
                 themeRect.contains(relX, relY),
                 themeIconU, 36
         );
     }
 
     private void drawSingleTab(
-            DrawContext context,
+            GuiGraphicsExtractor context,
             Identifier tex,
             boolean dark,
             LayoutCalculator.TabSlice tab,
             boolean active
     ) {
         LayoutCalculator.Rect b = tab.bounds();
-        int tx = this.x + b.x();
-        int ty = this.y + b.y();
+        int tx = this.leftPos + b.x();
+        int ty = this.topPos + b.y();
         RenderCompat.drawTab(context, tex, tx, ty, b.width(), b.height(), active);
 
         String label = Integer.toString(tab.index() + 1);
-        int textW = this.textRenderer.getWidth(label);
+        int textW = this.font.width(label);
         int labelX = tx + (b.width() - textW) / 2;
         int labelY = ty + (active ? 5 : 7);
-        context.drawText(this.textRenderer, label, labelX, labelY, RenderCompat.tabTextColor(dark, active), dark && active);
+        context.text(this.font, label, labelX, labelY, RenderCompat.tabTextColor(dark, active), dark && active);
     }
 
     @Override
-    protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
+    protected void extractLabels(GuiGraphicsExtractor context, int mouseX, int mouseY) {
         boolean dark = ClientConfig.get().darkGui();
         int color = RenderCompat.titleColor(dark);
 
-        int maxTitleWidth = Math.max(40, this.layout.modeButton().x() - this.titleX - 4);
-        Text displayTitle = this.title;
-        if (this.textRenderer.getWidth(displayTitle) > maxTitleWidth) {
-            String trimmed = this.textRenderer.trimToWidth(displayTitle.getString(), maxTitleWidth - 6) + "...";
-            displayTitle = Text.literal(trimmed);
+        int maxTitleWidth = Math.max(40, this.layout.modeButton().x() - this.titleLabelX - 4);
+        Component displayTitle = this.title;
+        if (this.font.width(displayTitle) > maxTitleWidth) {
+            String trimmed = this.font.plainSubstrByWidth(displayTitle.getString(), maxTitleWidth - 6) + "...";
+            displayTitle = Component.literal(trimmed);
         }
 
-        RenderCompat.drawLabel(context, this.textRenderer, displayTitle, this.titleX, this.titleY, color, dark);
+        RenderCompat.drawLabel(context, this.font, displayTitle, this.titleLabelX, this.titleLabelY, color, dark);
         RenderCompat.drawLabel(
-                context, this.textRenderer, this.playerInventoryTitle,
-                this.playerInventoryTitleX, this.playerInventoryTitleY, color, dark
+                context, this.font, this.playerInventoryTitle,
+                this.inventoryLabelX, this.inventoryLabelY, color, dark
         );
     }
 
-    private void drawControlTooltips(DrawContext context, int mouseX, int mouseY) {
-        if (!this.handler.getCursorStack().isEmpty()) {
+    private void drawControlTooltips(GuiGraphicsExtractor context, int mouseX, int mouseY) {
+        if (!this.menu.getCarried().isEmpty()) {
             return;
         }
-        double relX = mouseX - this.x;
-        double relY = mouseY - this.y;
+        double relX = mouseX - this.leftPos;
+        double relY = mouseY - this.topPos;
 
         if (this.layout.modeButton().contains(relX, relY)) {
-            List<Text> lines = new ArrayList<>(3);
+            List<Component> lines = new ArrayList<>(3);
             GuiMode configured = ClientConfig.get().guiMode();
-            lines.add(Text.translatable("gui.expandedstorage.button.mode", Text.translatable(configured.translationKey())));
-            lines.add(Text.translatable(configured.translationKey() + ".desc").formatted(Formatting.GRAY));
+            lines.add(Component.translatable("gui.expandedstorage.button.mode", Component.translatable(configured.translationKey())));
+            lines.add(Component.translatable(configured.translationKey() + ".desc").withStyle(ChatFormatting.GRAY));
             if (this.layout.autoFallback()) {
-                lines.add(Text.translatable("gui.expandedstorage.mode.fallback_notice").formatted(Formatting.GOLD));
-            } else if (configured == GuiMode.SPLIT_WING && !this.handler.isDoubleChest()) {
-                lines.add(Text.translatable("gui.expandedstorage.mode.single_notice").formatted(Formatting.GRAY));
+                lines.add(Component.translatable("gui.expandedstorage.mode.fallback_notice").withStyle(ChatFormatting.GOLD));
+            } else if (configured == GuiMode.SPLIT_WING && !this.menu.isDoubleChest()) {
+                lines.add(Component.translatable("gui.expandedstorage.mode.single_notice").withStyle(ChatFormatting.GRAY));
             }
-            context.drawTooltip(this.textRenderer, lines, mouseX, mouseY);
+            context.setComponentTooltipForNextFrame(this.font, lines, mouseX, mouseY);
             return;
         }
 
         if (this.layout.themeButton().contains(relX, relY)) {
             boolean dark = ClientConfig.get().darkGui();
-            Text state = Text.translatable(dark ? "gui.expandedstorage.theme.dark" : "gui.expandedstorage.theme.light");
-            List<Text> lines = List.of(
-                    Text.translatable("gui.expandedstorage.button.theme", state),
-                    Text.translatable("gui.expandedstorage.button.theme.desc").formatted(Formatting.GRAY)
+            Component state = Component.translatable(dark ? "gui.expandedstorage.theme.dark" : "gui.expandedstorage.theme.light");
+            List<Component> lines = List.of(
+                    Component.translatable("gui.expandedstorage.button.theme", state),
+                    Component.translatable("gui.expandedstorage.button.theme.desc").withStyle(ChatFormatting.GRAY)
             );
-            context.drawTooltip(this.textRenderer, lines, mouseX, mouseY);
+            context.setComponentTooltipForNextFrame(this.font, lines, mouseX, mouseY);
             return;
         }
 
         if (this.layout.effectiveMode() == GuiMode.SMART_TABBED) {
             for (LayoutCalculator.TabSlice tab : this.layout.tabs()) {
                 if (tab.bounds().contains(relX, relY)) {
-                    Text tip = Text.translatable(
+                    Component tip = Component.translatable(
                             "gui.expandedstorage.tab.tooltip",
                             tab.index() + 1,
                             this.layout.tabCount(),
                             tab.startSlot() + 1,
                             tab.endSlotExclusive()
                     );
-                    context.drawTooltip(this.textRenderer, tip, mouseX, mouseY);
+                    context.setTooltipForNextFrame(this.font, tip, mouseX, mouseY);
                     return;
                 }
             }
@@ -223,15 +223,15 @@ public class ExpandedChestScreen extends HandledScreen<ExpandedChestScreenHandle
     }
 
     @Override
-    protected boolean isClickOutsideBounds(double mouseX, double mouseY, int left, int top) {
+    protected boolean hasClickedOutside(double mouseX, double mouseY, int left, int top) {
         return !this.layout.containsPoint(mouseX - left, mouseY - top);
     }
 
     @Override
-    public boolean mouseClicked(Click click, boolean doubled) {
+    public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
         if (click.button() == 0) {
-            double relX = click.x() - this.x;
-            double relY = click.y() - this.y;
+            double relX = click.x() - this.leftPos;
+            double relY = click.y() - this.topPos;
 
             if (this.layout.modeButton().contains(relX, relY)) {
                 ClientConfig.get().setGuiMode(ClientConfig.get().guiMode().next());
@@ -267,7 +267,7 @@ public class ExpandedChestScreen extends HandledScreen<ExpandedChestScreenHandle
     }
 
     @Override
-    public boolean mouseReleased(Click click) {
+    public boolean mouseReleased(MouseButtonEvent click) {
         if (this.suppressNextRelease) {
             this.suppressNextRelease = false;
             return true;
@@ -276,8 +276,8 @@ public class ExpandedChestScreen extends HandledScreen<ExpandedChestScreenHandle
     }
 
     private static void playClickSound() {
-        MinecraftClient.getInstance().getSoundManager().play(
-                PositionedSoundInstance.ui(SoundEvents.UI_BUTTON_CLICK, 1.0f)
+        Minecraft.getInstance().getSoundManager().play(
+                SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0f)
         );
     }
 }

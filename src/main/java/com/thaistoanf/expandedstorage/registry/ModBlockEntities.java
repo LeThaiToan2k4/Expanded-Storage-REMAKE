@@ -4,9 +4,9 @@ import com.thaistoanf.expandedstorage.block.entity.ExpandedChestBlockEntity;
 import com.thaistoanf.expandedstorage.compat.IdCompat;
 import com.thaistoanf.expandedstorage.core.ChestTier;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -18,7 +18,7 @@ public final class ModBlockEntities {
     static {
         for (ChestTier tier : ChestTier.values()) {
             BlockEntityType<ExpandedChestBlockEntity> type = Registry.register(
-                    Registries.BLOCK_ENTITY_TYPE,
+                    BuiltInRegistries.BLOCK_ENTITY_TYPE,
                     IdCompat.id(tier.blockId()),
                     FabricBlockEntityTypeBuilder.create(
                             (pos, state) -> new ExpandedChestBlockEntity(tier, pos, state),

@@ -5,13 +5,13 @@ import com.thaistoanf.expandedstorage.core.ChestTier;
 import com.thaistoanf.expandedstorage.core.GuiMode;
 import com.thaistoanf.expandedstorage.core.LayoutCalculator;
 import com.thaistoanf.expandedstorage.registry.ModScreenHandlers;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.slot.Slot;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,19 +20,19 @@ import java.util.List;
  * Shared container handler for all single and double tiered chests (36 to 270 slots).
  * Relies exclusively on vanilla dirty-slot synchronization without custom full-inventory packets.
  */
-public class ExpandedChestScreenHandler extends ScreenHandler {
-    private final Inventory inventory;
+public class ExpandedChestScreenHandler extends AbstractContainerMenu {
+    private final Container inventory;
     private final ChestTier tier;
     private final boolean doubleChest;
     private final int chestSize;
     private final List<ToggleableSlot> chestSlots;
     private final List<Slot> playerSlots;
 
-    public ExpandedChestScreenHandler(int syncId, PlayerInventory playerInventory, NetworkCompat.ChestOpenData data) {
+    public ExpandedChestScreenHandler(int syncId, Inventory playerInventory, NetworkCompat.ChestOpenData data) {
         this(
                 syncId,
                 playerInventory,
-                new SimpleInventory(data.tier().slots(data.doubleChest())),
+                new SimpleContainer(data.tier().slots(data.doubleChest())),
                 data.tier(),
                 data.doubleChest()
         );
@@ -40,8 +40,8 @@ public class ExpandedChestScreenHandler extends ScreenHandler {
 
     public ExpandedChestScreenHandler(
             int syncId,
-            PlayerInventory playerInventory,
-            Inventory inventory,
+            Inventory playerInventory,
+            Container inventory,
             ChestTier tier,
             boolean doubleChest
     ) {
@@ -49,9 +49,9 @@ public class ExpandedChestScreenHandler extends ScreenHandler {
         this.tier = tier;
         this.doubleChest = doubleChest;
         this.chestSize = tier.slots(doubleChest);
-        checkSize(inventory, this.chestSize);
+        checkContainerSize(inventory, this.chestSize);
         this.inventory = inventory;
-        inventory.onOpen(playerInventory.player);
+        inventory.startOpen(playerInventory.player);
 
         LayoutCalculator.Layout defaultLayout = LayoutCalculator.compute(
                 tier, doubleChest, GuiMode.ADAPTIVE, 0, 0, 0
@@ -85,7 +85,7 @@ public class ExpandedChestScreenHandler extends ScreenHandler {
         }
     }
 
-    public Inventory getInventory() {
+    public Container getInventory() {
         return inventory;
     }
 
@@ -122,48 +122,48 @@ public class ExpandedChestScreenHandler extends ScreenHandler {
     }
 
     @Override
-    public ItemStack quickMove(PlayerEntity player, int slotIndex) {
+    public ItemStack quickMoveStack(Player player, int slotIndex) {
         if (slotIndex < 0 || slotIndex >= this.slots.size()) {
             return ItemStack.EMPTY;
         }
         ItemStack transferred = ItemStack.EMPTY;
         Slot slot = this.slots.get(slotIndex);
-        if (slot != null && slot.hasStack()) {
-            ItemStack stack = slot.getStack();
+        if (slot != null && slot.hasItem()) {
+            ItemStack stack = slot.getItem();
             transferred = stack.copy();
             if (slotIndex < this.chestSize) {
-                if (!this.insertItem(stack, this.chestSize, this.slots.size(), true)) {
+                if (!this.moveItemStackTo(stack, this.chestSize, this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (!this.insertItem(stack, 0, this.chestSize, false)) {
+            } else if (!this.moveItemStackTo(stack, 0, this.chestSize, false)) {
                 return ItemStack.EMPTY;
             }
 
             if (stack.isEmpty()) {
-                slot.setStack(ItemStack.EMPTY);
+                slot.setByPlayer(ItemStack.EMPTY);
             } else {
-                slot.markDirty();
+                slot.setChanged();
             }
         }
         return transferred;
     }
 
     @Override
-    public boolean canUse(PlayerEntity player) {
-        return this.inventory.canPlayerUse(player);
+    public boolean stillValid(Player player) {
+        return this.inventory.stillValid(player);
     }
 
     @Override
-    public void onClosed(PlayerEntity player) {
-        super.onClosed(player);
-        this.inventory.onClose(player);
+    public void removed(Player player) {
+        super.removed(player);
+        this.inventory.stopOpen(player);
     }
 
     /** Slot whose visibility can be toggled on the client for Smart Tabbed pages. */
     public static class ToggleableSlot extends Slot {
         private boolean active = true;
 
-        public ToggleableSlot(Inventory inventory, int index, int x, int y) {
+        public ToggleableSlot(Container inventory, int index, int x, int y) {
             super(inventory, index, x, y);
         }
 
@@ -172,7 +172,7 @@ public class ExpandedChestScreenHandler extends ScreenHandler {
         }
 
         @Override
-        public boolean isEnabled() {
+        public boolean isActive() {
             return this.active;
         }
     }

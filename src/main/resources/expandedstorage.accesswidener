@@ -1,6 +1,7 @@
-accessWidener v2 named
+accessWidener v2 official
 
-# Dynamic GUI layouts move chest slots at runtime (adaptive grid, split-wing, smart tabs).
-# Slot.x / Slot.y are final in 1.20.1; they become mutable in later versions.
-mutable field net/minecraft/screen/slot/Slot x I
-mutable field net/minecraft/screen/slot/Slot y I
+# Dynamic GUI layouts move chest slots and resize container bounds at runtime.
+mutable field net/minecraft/world/inventory/Slot x I
+mutable field net/minecraft/world/inventory/Slot y I
+mutable field net/minecraft/client/gui/screens/inventory/AbstractContainerScreen imageWidth I
+mutable field net/minecraft/client/gui/screens/inventory/AbstractContainerScreen imageHeight I

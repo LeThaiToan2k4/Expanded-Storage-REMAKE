@@ -3,17 +3,17 @@ package com.thaistoanf.expandedstorage.registry;
 import com.thaistoanf.expandedstorage.block.ExpandedChestBlock;
 import com.thaistoanf.expandedstorage.compat.IdCompat;
 import com.thaistoanf.expandedstorage.core.ChestTier;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.MapColor;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.MapColor;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -25,46 +25,46 @@ public final class ModBlocks {
     private static final Map<ChestTier, ExpandedChestBlock> BLOCKS = new EnumMap<>(ChestTier.class);
     private static final Map<ChestTier, BlockItem> ITEMS = new EnumMap<>(ChestTier.class);
 
-    public static final ExpandedChestBlock COPPER_CHEST = registerChest(ChestTier.COPPER, MapColor.ORANGE,
-            BlockSoundGroup.COPPER);
-    public static final ExpandedChestBlock IRON_CHEST = registerChest(ChestTier.IRON, MapColor.IRON_GRAY,
-            BlockSoundGroup.METAL);
+    public static final ExpandedChestBlock COPPER_CHEST = registerChest(ChestTier.COPPER, MapColor.COLOR_ORANGE,
+            SoundType.COPPER);
+    public static final ExpandedChestBlock IRON_CHEST = registerChest(ChestTier.IRON, MapColor.METAL,
+            SoundType.METAL);
     public static final ExpandedChestBlock GOLD_CHEST = registerChest(ChestTier.GOLD, MapColor.GOLD,
-            BlockSoundGroup.METAL);
-    public static final ExpandedChestBlock DIAMOND_CHEST = registerChest(ChestTier.DIAMOND, MapColor.DIAMOND_BLUE,
-            BlockSoundGroup.METAL);
-    public static final ExpandedChestBlock OBSIDIAN_CHEST = registerChest(ChestTier.OBSIDIAN, MapColor.BLACK,
-            BlockSoundGroup.STONE);
-    public static final ExpandedChestBlock NETHERITE_CHEST = registerChest(ChestTier.NETHERITE, MapColor.BLACK,
-            BlockSoundGroup.NETHERITE);
+            SoundType.METAL);
+    public static final ExpandedChestBlock DIAMOND_CHEST = registerChest(ChestTier.DIAMOND, MapColor.DIAMOND,
+            SoundType.METAL);
+    public static final ExpandedChestBlock OBSIDIAN_CHEST = registerChest(ChestTier.OBSIDIAN, MapColor.COLOR_BLACK,
+            SoundType.STONE);
+    public static final ExpandedChestBlock NETHERITE_CHEST = registerChest(ChestTier.NETHERITE, MapColor.COLOR_BLACK,
+            SoundType.NETHERITE_BLOCK);
 
     private ModBlocks() {
     }
 
-    private static ExpandedChestBlock registerChest(ChestTier tier, MapColor mapColor, BlockSoundGroup sounds) {
+    private static ExpandedChestBlock registerChest(ChestTier tier, MapColor mapColor, SoundType sounds) {
         Identifier id = IdCompat.id(tier.blockId());
-        RegistryKey<Block> blockKey = RegistryKey.of(RegistryKeys.BLOCK, id);
-        RegistryKey<Item> itemKey = RegistryKey.of(RegistryKeys.ITEM, id);
+        ResourceKey<Block> blockKey = ResourceKey.create(Registries.BLOCK, id);
+        ResourceKey<Item> itemKey = ResourceKey.create(Registries.ITEM, id);
 
-        AbstractBlock.Settings blockSettings = AbstractBlock.Settings.create()
-                .registryKey(blockKey)
+        BlockBehaviour.Properties blockSettings = BlockBehaviour.Properties.of()
+                .setId(blockKey)
                 .mapColor(mapColor)
                 .strength(tier.hardness(), tier.blastResistance())
-                .sounds(sounds)
-                .requiresTool()
-                .nonOpaque();
+                .sound(sounds)
+                .requiresCorrectToolForDrops()
+                .noOcclusion();
 
         ExpandedChestBlock block = new ExpandedChestBlock(tier, blockSettings, () -> ModBlockEntities.get(tier));
-        Registry.register(Registries.BLOCK, blockKey, block);
+        Registry.register(BuiltInRegistries.BLOCK, blockKey, block);
 
-        Item.Settings itemSettings = new Item.Settings()
-                .registryKey(itemKey)
-                .useBlockPrefixedTranslationKey();
+        Item.Properties itemSettings = new Item.Properties()
+                .setId(itemKey)
+                .useBlockDescriptionPrefix();
         if (tier.fireproof()) {
-            itemSettings.fireproof();
+            itemSettings.fireResistant();
         }
         BlockItem blockItem = new BlockItem(block, itemSettings);
-        Registry.register(Registries.ITEM, itemKey, blockItem);
+        Registry.register(BuiltInRegistries.ITEM, itemKey, blockItem);
 
         BLOCKS.put(tier, block);
         ITEMS.put(tier, blockItem);
