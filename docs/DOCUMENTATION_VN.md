@@ -7,13 +7,13 @@
 - **Ten Mod:** Expanded Storage
 - **Mod ID:** `expandedstorage`
 - **Tac gia:** `thaistoanf`
-- **Phien ban Minecraft:** `1.21.7` (Fabric)
-- **Yeu cau:** Fabric Loader (`>=0.20.1`), Fabric API (`>=0.129.0+1.21.7`), Java `21`
+- **Phien ban Minecraft:** `1.21.8` (Fabric)
+- **Yeu cau:** Fabric Loader (`>=0.20.1`), Fabric API (`>=0.136.1+1.21.8`), Java `21`
 - **Kho ma nguon:** https://github.com/LeThaiToan2k4/Expanded-Storage-REMAKE
 - **CurseForge:** https://www.curseforge.com/members/lethaitoan2k4/projects
 - **Ko-fi:** https://ko-fi.com/thaistoanf
 
-**Expanded Storage** la phien ban lam lai doc lap (clean-room remake) lay cam hung tu mod *Expanded Storage* co dien, duoc viet lai hoan toan tu dau cho Fabric hien dai ma khong phu thuoc vao bat ky thu vien ben thu ba nao ngoai Fabric API. Cac texture ruong **Sat, Vang, Kim Cuong, Hac Dien Thach va Netherite** duoc ke thua tu tai nguyen giay phep MIT cua **Ellemes** va **Ninni**, ket hop voi texture **Ruong Dong** duoc thiet ke dong bo cung phong cach (xem [../CREDITS.md](../CREDITS.md)).
+**Expanded Storage** la phien ban lam lai doc lap (clean-room remake) lay cam hung tu mod _Expanded Storage_ co dien, duoc viet lai hoan toan tu dau cho Fabric hien dai ma khong phu thuoc vao bat ky thu vien ben thu ba nao ngoai Fabric API. Cac texture ruong **Sat, Vang, Kim Cuong, Hac Dien Thach va Netherite** duoc ke thua tu tai nguyen giay phep MIT cua **Ellemes** va **Ninni**, ket hop voi texture **Ruong Dong** duoc thiet ke dong bo cung phong cach (xem [../CREDITS.md](../CREDITS.md)).
 
 ---
 
@@ -33,14 +33,14 @@ Mod tap trung hoan toan vao **Ruong nang cap theo cap bac** (khong co Thung Barr
 
 ### Bang Thong So Chi Tiet
 
-| Cap Ruong | Dinh Danh (ID) | Ruong Don | Ruong Doi | Do Cung | Khang No | Cong Cu Khai Thac | Khang Lua / Dung Nham |
-| :--- | :--- | :---: | :---: | :---: | :---: | :--- | :---: |
-| Ruong Dong | `expandedstorage:copper_chest` | 36 | 72 | 3.0 | 6.0 | Cup Da tro len | Khong |
-| Ruong Sat | `expandedstorage:iron_chest` | 54 | 108 | 5.0 | 6.0 | Cup Da tro len | Khong |
-| Ruong Vang | `expandedstorage:gold_chest` | 81 | 162 | 3.0 | 6.0 | Cup Sat tro len | Khong |
-| Ruong Kim Cuong | `expandedstorage:diamond_chest` | 108 | 216 | 5.0 | 6.0 | Cup Sat tro len | Khong |
-| Ruong Hac Dien Thach | `expandedstorage:obsidian_chest` | 108 | 216 | 10.0 | 1200.0 | Cup Kim Cuong tro len | Khong |
-| Ruong Netherite | `expandedstorage:netherite_chest` | 135 | 270 | 12.0 | 1200.0 | Cup Kim Cuong tro len | Co |
+| Cap Ruong            | Dinh Danh (ID)                    | Ruong Don | Ruong Doi | Do Cung | Khang No | Cong Cu Khai Thac     | Khang Lua / Dung Nham |
+| :------------------- | :-------------------------------- | :-------: | :-------: | :-----: | :------: | :-------------------- | :-------------------: |
+| Ruong Dong           | `expandedstorage:copper_chest`    |    36     |    72     |   3.0   |   6.0    | Cup Da tro len        |         Khong         |
+| Ruong Sat            | `expandedstorage:iron_chest`      |    54     |    108    |   5.0   |   6.0    | Cup Da tro len        |         Khong         |
+| Ruong Vang           | `expandedstorage:gold_chest`      |    81     |    162    |   3.0   |   6.0    | Cup Sat tro len       |         Khong         |
+| Ruong Kim Cuong      | `expandedstorage:diamond_chest`   |    108    |    216    |   5.0   |   6.0    | Cup Sat tro len       |         Khong         |
+| Ruong Hac Dien Thach | `expandedstorage:obsidian_chest`  |    108    |    216    |  10.0   |  1200.0  | Cup Kim Cuong tro len |         Khong         |
+| Ruong Netherite      | `expandedstorage:netherite_chest` |    135    |    270    |  12.0   |  1200.0  | Cup Kim Cuong tro len |          Co           |
 
 ### Chi Tiet Cong Thuc Che Tao
 
@@ -78,14 +78,14 @@ Expanded Storage loai bo thanh cuon va nut mui ten cu ky, thay bang he thong cat
 
 ### Kich Thuoc Luoi Theo 3 Che Do (`cot x hang`)
 
-| Cap Ruong | Adaptive (Don) | Adaptive (Doi) | Split-Wing (Doi) | Smart Tabbed (Don) | Smart Tabbed (Doi) |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| Dong | `9x4` (36) | `12x6` (72) | `9x4 \| 9x4` | `9x4` x 1 tab | `9x4` x 2 tab (36 o/tab) |
-| Sat | `9x6` (54) | `12x9` (108) | `9x6 \| 9x6` | `9x6` x 1 tab | `9x6` x 2 tab (54 o/tab) |
-| Vang | `9x9` (81) | `18x9` (162) | `9x9 \| 9x9` | `9x9` x 1 tab | `9x9` x 2 tab (81 o/tab) |
-| Kim Cuong | `12x9` (108) | `24x9` (216) | `12x9 \| 12x9` | `9x6` x 2 tab | `12x9` x 2 tab (108 o/tab) |
-| Hac Dien Thach | `12x9` (108) | `24x9` (216) | `12x9 \| 12x9` | `9x6` x 2 tab | `12x9` x 2 tab (108 o/tab) |
-| Netherite | `15x9` (135) | `27x10` (270) | `15x9 \| 15x9` | `9x5` x 3 tab | `10x9` x 3 tab (90 o/tab) |
+| Cap Ruong      | Adaptive (Don) | Adaptive (Doi) | Split-Wing (Doi) | Smart Tabbed (Don) |     Smart Tabbed (Doi)     |
+| :------------- | :------------: | :------------: | :--------------: | :----------------: | :------------------------: |
+| Dong           |   `9x4` (36)   |  `12x6` (72)   |   `9x4 \| 9x4`   |   `9x4` x 1 tab    |  `9x4` x 2 tab (36 o/tab)  |
+| Sat            |   `9x6` (54)   |  `12x9` (108)  |   `9x6 \| 9x6`   |   `9x6` x 1 tab    |  `9x6` x 2 tab (54 o/tab)  |
+| Vang           |   `9x9` (81)   |  `18x9` (162)  |   `9x9 \| 9x9`   |   `9x9` x 1 tab    |  `9x9` x 2 tab (81 o/tab)  |
+| Kim Cuong      |  `12x9` (108)  |  `24x9` (216)  |  `12x9 \| 12x9`  |   `9x6` x 2 tab    | `12x9` x 2 tab (108 o/tab) |
+| Hac Dien Thach |  `12x9` (108)  |  `24x9` (216)  |  `12x9 \| 12x9`  |   `9x6` x 2 tab    | `12x9` x 2 tab (108 o/tab) |
+| Netherite      |  `15x9` (135)  | `27x10` (270)  |  `15x9 \| 15x9`  |   `9x5` x 3 tab    | `10x9` x 3 tab (90 o/tab)  |
 
 - **Tu Dong Thu Gon Khi Man Hinh Nho:** Neu cua so game hoac GUI Scale hien tai nho hon kich thuoc cua che do `ADAPTIVE` hoac `SPLIT_WING`, `LayoutCalculator` tu dong chuyen sang `SMART_TABBED` de dam bao khong bao gio bi tran khoi man hinh.
 - **Giu Vat Pham Tren Con Tro Khi Chuyen Tab:** Nguoi choi co the cam vat pham tren con tro chuot va nhan chuyen qua lai giua cac Tab hoac doi giao dien Sang/Toi ma khong bi roi vat pham.
